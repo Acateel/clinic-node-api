@@ -1,14 +1,25 @@
 import dotenv from 'dotenv'
+//read .env file
+dotenv.config()
+
 import express from 'express'
 import doctorRouter from './routers/doctor'
 import patientRouter from './routers/patient'
 import appointmentRouter from './routers/appointment'
+import dataSourse from './database/dataSourse'
 
-//read .env file
-dotenv.config()
 
 const app = express()
 const port = process.env.PORT
+
+dataSourse
+  .initialize()
+  .then(() => {
+    console.log('Data Source has been initialized!')
+  })
+  .catch((err) => {
+    console.error('Error during Data Source initialization:', err)
+  })
 
 // Include routers
 app.use('/doctors', doctorRouter)
