@@ -8,7 +8,7 @@ const dataSourse = new DataSource({
   password: process.env.TYPEORM_PASSWORD,
   database: process.env.TYPEORM_DATABASE,
   ssl: true,
-  entities: [`${__dirname}/entity/*.ts`],
+  entities: [`${__dirname}/entity/*.ts`, `${__dirname}/entity/*.js`],
   logging: process.env.TYPEORM_LOGGING === 'true',
 })
 
