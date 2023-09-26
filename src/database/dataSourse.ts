@@ -9,7 +9,6 @@ const dataSourse = new DataSource({
   database: process.env.TYPEORM_DATABASE,
   entities: [`${__dirname}/entity/*.ts`],
   logging: process.env.TYPEORM_LOGGING === 'true',
-  synchronize: true, // delete for production
 })
 
 export default dataSourse
