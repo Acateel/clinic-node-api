@@ -4,22 +4,27 @@ const doctorRouter = express.Router()
 
 // Get all
 doctorRouter.get('/', (req: Request, res: Response) => {
-    res.status(200).json({message: "Get all doctors"})
+  res.status(501).json({ message: 'Not implemented' })
 })
 
 // Get by id
 doctorRouter.get('/:id', (req: Request, res: Response) => {
-    const {id} = req.params
-    res.status(200).json({message: `Get doctor by id: ${id}`})
+  res.status(501).json({ message: 'Not implemented' })
 })
 
 // Create
-doctorRouter.post('/', (req: Request, res: Response) => {})
+doctorRouter.post('/', (req: Request, res: Response) => {
+  res.status(501).json({ message: 'Not implemented' })
+})
 
 // Update by id
-doctorRouter.patch('/:id', (req: Request, res: Response) => {})
+doctorRouter.patch('/:id', (req: Request, res: Response) => {
+  res.status(501).json({ message: 'Not implemented' })
+})
 
 // Delete by id
-doctorRouter.delete('/:id', (req: Request, res: Response) => {})
+doctorRouter.delete('/:id', (req: Request, res: Response) => {
+  res.status(501).json({ message: 'Not implemented' })
+})
 
 export default doctorRouter
