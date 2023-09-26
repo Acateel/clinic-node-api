@@ -1,6 +1,6 @@
 Backend api for clinic by express and typeorm
 
-[Deployed server]()
+[Deployed API server](https://clinic-api-g14h.onrender.com)
 
 ## Getting Started
 
