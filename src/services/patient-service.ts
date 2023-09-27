@@ -2,7 +2,7 @@ import dataSourse from '../database/dataSourse'
 import { Patient } from '../database/entity/patient.entity'
 
 class PatientService {
-  async getAll() {
+  async get() {
     const patientRepo = dataSourse.getRepository(Patient)
     const patients = await patientRepo.find()
 
@@ -18,7 +18,7 @@ class PatientService {
     return patient
   }
 
-  async createOne(firstName: string, lastName: string) {
+  async create(firstName: string, lastName: string) {
     const patientRepo = dataSourse.getRepository(Patient)
     const patient = patientRepo.create({ firstName, lastName })
     const result = await patientRepo.save(patient)
@@ -26,7 +26,7 @@ class PatientService {
     return result
   }
 
-  async updateById(id: number, firstName: string, lastName: string) {
+  async update(id: number, firstName: string, lastName: string) {
     const patientRepo = dataSourse.getRepository(Patient)
     const patient = await patientRepo.findOneBy({ id })
     patientRepo.merge(patient, { firstName, lastName })
@@ -35,7 +35,7 @@ class PatientService {
     return result
   }
 
-  async deleteById(id: number) {
+  async delete(id: number) {
     const patientRepo = dataSourse.getRepository(Patient)
     const result = await patientRepo.delete(id)
 

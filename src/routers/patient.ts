@@ -6,7 +6,7 @@ const patientRouter = express.Router()
 // Get all
 patientRouter.get('/', async (req: Request, res: Response) => {
   try {
-    const patients = await PatientService.getAll()
+    const patients = await PatientService.get()
     res.status(200).json(patients)
   } catch (error) {
     console.log('[PATIENTS_GET_ALL]', error)
@@ -29,7 +29,7 @@ patientRouter.get('/:id', async (req: Request, res: Response) => {
 patientRouter.post('/', async (req: Request, res: Response) => {
   try {
     const { firstName, lastName } = req.body
-    const patient = await PatientService.createOne(firstName, lastName)
+    const patient = await PatientService.create(firstName, lastName)
     res.status(200).json(patient)
   } catch (error) {
     console.log('[PATIENTS_POST]', error)
@@ -41,7 +41,7 @@ patientRouter.post('/', async (req: Request, res: Response) => {
 patientRouter.patch('/:id', async (req: Request, res: Response) => {
   try {
     const { firstName, lastName } = req.body
-    const patient = await PatientService.updateById(
+    const patient = await PatientService.update(
       +req.params.id,
       firstName,
       lastName
@@ -56,7 +56,7 @@ patientRouter.patch('/:id', async (req: Request, res: Response) => {
 // Delete by id
 patientRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
-    const patient = await PatientService.deleteById(+req.params.id)
+    const patient = await PatientService.delete(+req.params.id)
     res.status(200).json(patient)
   } catch (error) {
     console.log('[PATIENTS_DELETE]', error)
