@@ -10,7 +10,8 @@ export const dataSourse = new DataSource({
   password: process.env.TYPEORM_PASSWORD,
   database: process.env.TYPEORM_DATABASE,
   ssl: true,
-  entities: [`${__dirname}/entity/*.ts`, `${__dirname}/entity/*.js`],
+  entities: [`${__dirname}/entity/**/*{.ts,.js}`],
   logging: process.env.TYPEORM_LOGGING === 'true',
-  synchronize: true, // learn migration for production and remove synchronize
+  synchronize: false,
+  migrations: [`${__dirname}/migrations/**/*{.ts,.js}`],
 })
