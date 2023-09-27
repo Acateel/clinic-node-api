@@ -1,10 +1,19 @@
-import { Entity, Column, ManyToOne } from 'typeorm'
+import {
+  Entity,
+  Column,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm'
 import { Patient } from './patient.entity'
-import { BaseEntity } from './base-entity'
 import { Doctor } from './doctor.entity'
 
 @Entity()
-export class Appointment extends BaseEntity {
+export class Appointment {
+  @PrimaryGeneratedColumn()
+  id: number
+
   @Column()
   time: Date
 
@@ -13,4 +22,10 @@ export class Appointment extends BaseEntity {
 
   @ManyToOne(() => Doctor, (doctor) => doctor.appointments)
   doctor: Doctor
+
+  @CreateDateColumn()
+  createdAt: Date
+
+  @UpdateDateColumn()
+  updateAt: Date
 }

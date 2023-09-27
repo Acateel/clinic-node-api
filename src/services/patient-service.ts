@@ -9,7 +9,7 @@ class PatientService {
     return patients
   }
 
-  async getById(id: string) {
+  async getById(id: number) {
     const patientRepo = dataSourse.getRepository(Patient)
     const patient = await patientRepo.findOneBy({
       id,
@@ -26,7 +26,7 @@ class PatientService {
     return result
   }
 
-  async updateById(id: string, firstName: string, lastName: string) {
+  async updateById(id: number, firstName: string, lastName: string) {
     const patientRepo = dataSourse.getRepository(Patient)
     const patient = await patientRepo.findOneBy({ id })
     patientRepo.merge(patient, { firstName, lastName })
@@ -35,7 +35,7 @@ class PatientService {
     return result
   }
 
-  async deleteById(id: string) {
+  async deleteById(id: number) {
     const patientRepo = dataSourse.getRepository(Patient)
     const result = await patientRepo.delete(id)
 

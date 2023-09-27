@@ -17,7 +17,7 @@ patientRouter.get('/', async (req: Request, res: Response) => {
 // Get by id
 patientRouter.get('/:id', async (req: Request, res: Response) => {
   try {
-    const patient = await PatientService.getById(req.params.id)
+    const patient = await PatientService.getById(+req.params.id)
     res.status(200).json(patient)
   } catch (error) {
     console.log('[PATIENTS_GET]', error)
@@ -42,7 +42,7 @@ patientRouter.patch('/:id', async (req: Request, res: Response) => {
   try {
     const { firstName, lastName } = req.body
     const patient = await PatientService.updateById(
-      req.params.id,
+      +req.params.id,
       firstName,
       lastName
     )
@@ -56,7 +56,7 @@ patientRouter.patch('/:id', async (req: Request, res: Response) => {
 // Delete by id
 patientRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
-    const patient = await PatientService.deleteById(req.params.id)
+    const patient = await PatientService.deleteById(+req.params.id)
     res.status(200).json(patient)
   } catch (error) {
     console.log('[PATIENTS_DELETE]', error)
