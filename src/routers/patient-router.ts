@@ -1,10 +1,10 @@
-import express, { Request, Response } from 'express'
+import express from 'express'
 import PatientService from '../services/patient-service'
 
 const patientRouter = express.Router()
 
 // Get all
-patientRouter.get('/', async (req: Request, res: Response) => {
+patientRouter.get('/', async (req, res) => {
   try {
     const patients = await PatientService.get()
     res.status(200).json(patients)
@@ -15,7 +15,7 @@ patientRouter.get('/', async (req: Request, res: Response) => {
 })
 
 // Get by id
-patientRouter.get('/:id', async (req: Request, res: Response) => {
+patientRouter.get('/:id', async (req, res) => {
   try {
     const patient = await PatientService.getById(+req.params.id)
     res.status(200).json(patient)
@@ -26,7 +26,7 @@ patientRouter.get('/:id', async (req: Request, res: Response) => {
 })
 
 // Create
-patientRouter.post('/', async (req: Request, res: Response) => {
+patientRouter.post('/', async (req, res) => {
   try {
     const { firstName, lastName } = req.body
     const patient = await PatientService.create(firstName, lastName)
@@ -38,7 +38,7 @@ patientRouter.post('/', async (req: Request, res: Response) => {
 })
 
 // Update by id
-patientRouter.patch('/:id', async (req: Request, res: Response) => {
+patientRouter.patch('/:id', async (req, res) => {
   try {
     const { firstName, lastName } = req.body
     const patient = await PatientService.update(
@@ -54,7 +54,7 @@ patientRouter.patch('/:id', async (req: Request, res: Response) => {
 })
 
 // Delete by id
-patientRouter.delete('/:id', async (req: Request, res: Response) => {
+patientRouter.delete('/:id', async (req, res) => {
   try {
     const patient = await PatientService.delete(+req.params.id)
     res.status(200).json(patient)

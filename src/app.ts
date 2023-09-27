@@ -1,9 +1,9 @@
 import express from 'express'
 import dotenv from 'dotenv'
 
-import doctorRouter from './routers/doctor'
-import patientRouter from './routers/patient'
-import appointmentRouter from './routers/appointment'
+import doctorRouter from './routers/doctor-router'
+import patientRouter from './routers/patient-router'
+import appointmentRouter from './routers/appointment-router'
 import dataSourse from './database/dataSourse'
 
 dotenv.config()
