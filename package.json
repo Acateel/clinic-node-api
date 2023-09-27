@@ -1,11 +1,11 @@
 {
   "name": "clinic-node-api",
   "version": "1.0.0",
-  "main": "app.ts",
+  "main": "index.ts",
   "scripts": {
-    "dev": "nodemon src/app.ts",
+    "dev": "nodemon src/index.ts",
     "build": "tsc -p tsconfig.json",
-    "start": "node dist/app.js"
+    "start": "node dist/index.js"
   },
   "license": "MIT",
   "devDependencies": {

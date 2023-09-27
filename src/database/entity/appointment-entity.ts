@@ -6,8 +6,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm'
-import { PatientEntity } from './patient.entity'
-import { DoctorEntity } from './doctor.entity'
+import { PatientEntity } from './patient-entity'
+import { DoctorEntity } from './doctor-entity'
 
 @Entity()
 export class AppointmentEntity {

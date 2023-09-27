@@ -1,5 +1,5 @@
-import { dataSourse } from '../database/dataSourse'
-import { PatientEntity } from '../database/entity/patient.entity'
+import { dataSourse } from '../database/data-sourse'
+import { PatientEntity } from '../database/entity/patient-entity'
 
 class PatientService {
   async get() {
