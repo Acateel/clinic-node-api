@@ -5,6 +5,7 @@ import { doctorRouter } from './routers/doctor-router'
 import { patientRouter } from './routers/patient-router'
 import { appointmentRouter } from './routers/appointment-router'
 import { dataSourse } from './database/data-sourse'
+import { errorHandler } from './middlewares/error-handler'
 
 dotenv.config()
 
@@ -15,6 +16,8 @@ app.use(express.json())
 app.use('/doctors', doctorRouter)
 app.use('/patients', patientRouter)
 app.use('/appointments', appointmentRouter)
+
+app.use(errorHandler)
 
 async function setupApplication() {
   await dataSourse.initialize()
