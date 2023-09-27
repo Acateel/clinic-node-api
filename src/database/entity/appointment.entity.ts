@@ -6,22 +6,22 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm'
-import { Patient } from './patient.entity'
-import { Doctor } from './doctor.entity'
+import { PatientEntity } from './patient.entity'
+import { DoctorEntity } from './doctor.entity'
 
 @Entity()
-export class Appointment {
+export class AppointmentEntity {
   @PrimaryGeneratedColumn()
   id: number
 
   @Column()
   time: Date
 
-  @ManyToOne(() => Patient, (patient) => patient.appointments)
-  patient: Patient
+  @ManyToOne(() => PatientEntity, (patient) => patient.appointments)
+  patient: PatientEntity
 
-  @ManyToOne(() => Doctor, (doctor) => doctor.appointments)
-  doctor: Doctor
+  @ManyToOne(() => DoctorEntity, (doctor) => doctor.appointments)
+  doctor: DoctorEntity
 
   @CreateDateColumn()
   createdAt: Date

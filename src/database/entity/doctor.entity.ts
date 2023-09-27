@@ -6,10 +6,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm'
-import { Appointment } from './appointment.entity'
+import { AppointmentEntity } from './appointment.entity'
 
 @Entity()
-export class Doctor {
+export class DoctorEntity {
   @PrimaryGeneratedColumn()
   id: number
 
@@ -19,8 +19,8 @@ export class Doctor {
   @Column()
   lastName: string
 
-  @OneToMany(() => Appointment, (appointment) => appointment.doctor)
-  appointments: Appointment[]
+  @OneToMany(() => AppointmentEntity, (appointment) => appointment.doctor)
+  appointments: AppointmentEntity[]
 
   @CreateDateColumn()
   createdAt: Date
