@@ -1,22 +1,29 @@
 import express from 'express'
+import dotenv from 'dotenv'
+
 import doctorRouter from './routers/doctor'
 import patientRouter from './routers/patient'
 import appointmentRouter from './routers/appointment'
-import bodyParser from 'body-parser'
+import dataSourse from './database/dataSourse'
+
+dotenv.config()
 
 const app = express()
 
-// add body parser 
-app.use(bodyParser.json())
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
-  })
-)
+app.use(express.json())
 
-// Include routers
 app.use('/doctors', doctorRouter)
 app.use('/patients', patientRouter)
 app.use('/appointments', appointmentRouter)
 
-export default app
+async function setupApplication() {
+  await dataSourse.initialize()
+  console.log('[SERVER_DATABASE] Data Source has been initialized!')
+
+  const port = process.env.PORT
+  app.listen(port, () => {
+    console.log(`[SERVER]: Server is running at http://localhost:${port}`)
+  })
+}
+
+setupApplication()
