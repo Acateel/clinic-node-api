@@ -10,6 +10,7 @@ const dataSourse = new DataSource({
   ssl: true,
   entities: [`${__dirname}/entity/*.ts`, `${__dirname}/entity/*.js`],
   logging: process.env.TYPEORM_LOGGING === 'true',
+  synchronize: true, // learn migration for production and remove synchronize
 })
 
 export default dataSourse

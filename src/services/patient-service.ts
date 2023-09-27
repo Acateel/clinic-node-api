@@ -20,7 +20,7 @@ class PatientService {
 
   async createOne(firstName: string, lastName: string) {
     const patientRepo = dataSourse.getRepository(Patient)
-    const patient = await patientRepo.create({ firstName, lastName })
+    const patient = patientRepo.create({ firstName, lastName })
     const result = await patientRepo.save(patient)
 
     return result

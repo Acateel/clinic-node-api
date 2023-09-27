@@ -1,8 +1,8 @@
+import app from './app'
 import dotenv from 'dotenv'
 //read .env file
 dotenv.config()
 
-import app from './app'
 import dataSourse from './database/dataSourse'
 
 // init data sourse
