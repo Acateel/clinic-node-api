@@ -1,8 +1,8 @@
 import express from 'express'
 
-const appointmentRouter = express.Router()
+export const appointmentRouter = express.Router()
 
-// Get all
+// Get
 appointmentRouter.get('/', (req, res) => {
   res.status(501).json({ message: 'Not implemented' })
 })
@@ -17,14 +17,12 @@ appointmentRouter.post('/', (req, res) => {
   res.status(501).json({ message: 'Not implemented' })
 })
 
-// Update by id
+// Update
 appointmentRouter.patch('/:id', (req, res) => {
   res.status(501).json({ message: 'Not implemented' })
 })
 
-// Delete by id
+// Delete
 appointmentRouter.delete('/:id', (req, res) => {
   res.status(501).json({ message: 'Not implemented' })
 })
-
-export default appointmentRouter

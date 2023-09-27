@@ -1,12 +1,12 @@
 import express from 'express'
-import PatientService from '../services/patient-service'
+import { patientService } from '../services/patient-service'
 
-const patientRouter = express.Router()
+export const patientRouter = express.Router()
 
-// Get all
+// Get
 patientRouter.get('/', async (req, res) => {
   try {
-    const patients = await PatientService.get()
+    const patients = await patientService.get()
     res.status(200).json(patients)
   } catch (error) {
     console.log('[PATIENTS_GET_ALL]', error)
@@ -17,7 +17,7 @@ patientRouter.get('/', async (req, res) => {
 // Get by id
 patientRouter.get('/:id', async (req, res) => {
   try {
-    const patient = await PatientService.getById(+req.params.id)
+    const patient = await patientService.getById(+req.params.id)
     res.status(200).json(patient)
   } catch (error) {
     console.log('[PATIENTS_GET]', error)
@@ -29,7 +29,7 @@ patientRouter.get('/:id', async (req, res) => {
 patientRouter.post('/', async (req, res) => {
   try {
     const { firstName, lastName } = req.body
-    const patient = await PatientService.create(firstName, lastName)
+    const patient = await patientService.create(firstName, lastName)
     res.status(200).json(patient)
   } catch (error) {
     console.log('[PATIENTS_POST]', error)
@@ -37,11 +37,11 @@ patientRouter.post('/', async (req, res) => {
   }
 })
 
-// Update by id
+// Update
 patientRouter.patch('/:id', async (req, res) => {
   try {
     const { firstName, lastName } = req.body
-    const patient = await PatientService.update(
+    const patient = await patientService.update(
       +req.params.id,
       firstName,
       lastName
@@ -53,15 +53,13 @@ patientRouter.patch('/:id', async (req, res) => {
   }
 })
 
-// Delete by id
+// Delete
 patientRouter.delete('/:id', async (req, res) => {
   try {
-    const patient = await PatientService.delete(+req.params.id)
+    const patient = await patientService.delete(+req.params.id)
     res.status(200).json(patient)
   } catch (error) {
     console.log('[PATIENTS_DELETE]', error)
     res.status(500).json({ message: 'Internal Server Error' })
   }
 })
-
-export default patientRouter

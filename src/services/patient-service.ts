@@ -1,4 +1,4 @@
-import dataSourse from '../database/dataSourse'
+import { dataSourse } from '../database/dataSourse'
 import { PatientEntity } from '../database/entity/patient.entity'
 
 class PatientService {
@@ -43,4 +43,4 @@ class PatientService {
   }
 }
 
-export default new PatientService()
+export const patientService = new PatientService()

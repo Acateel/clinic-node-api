@@ -2,7 +2,7 @@ import { DataSource } from 'typeorm'
 import dotenv from 'dotenv'
 dotenv.config()
 
-const dataSourse = new DataSource({
+export const dataSourse = new DataSource({
   type: 'postgres',
   host: process.env.TYPEORM_HOST,
   port: parseInt(process.env.TYPEORM_PORT ?? ''),
@@ -14,5 +14,3 @@ const dataSourse = new DataSource({
   logging: process.env.TYPEORM_LOGGING === 'true',
   synchronize: true, // learn migration for production and remove synchronize
 })
-
-export default dataSourse
