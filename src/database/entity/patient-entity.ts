@@ -19,6 +19,12 @@ export class PatientEntity {
   @Column()
   lastName: string
 
+  @Column({
+    nullable: true,
+    length: 15,
+  })
+  phoneNumber: string
+
   @OneToMany(() => AppointmentEntity, (appointment) => appointment.patient)
   appointments: AppointmentEntity[]
 

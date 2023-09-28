@@ -26,8 +26,12 @@ patientRouter.get('/:id', async (req, res, next) => {
 // Create
 patientRouter.post('/', async (req, res, next) => {
   try {
-    const { firstName, lastName } = req.body
-    const patient = await patientService.create(firstName, lastName)
+    const { firstName, lastName, phoneNumber } = req.body
+    const patient = await patientService.create(
+      firstName,
+      lastName,
+      phoneNumber
+    )
     res.status(200).json(patient)
   } catch (error) {
     next(error)
@@ -37,11 +41,12 @@ patientRouter.post('/', async (req, res, next) => {
 // Update
 patientRouter.patch('/:id', async (req, res, next) => {
   try {
-    const { firstName, lastName } = req.body
+    const { firstName, lastName, phoneNumber } = req.body
     const patient = await patientService.update(
       +req.params.id,
       firstName,
-      lastName
+      lastName,
+      phoneNumber
     )
     res.status(200).json(patient)
   } catch (error) {

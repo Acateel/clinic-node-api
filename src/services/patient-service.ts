@@ -18,18 +18,23 @@ class PatientService {
     return patient
   }
 
-  async create(firstName: string, lastName: string) {
+  async create(firstName: string, lastName: string, phoneNumber: string) {
     const patientRepo = dataSourse.getRepository(PatientEntity)
-    const patient = patientRepo.create({ firstName, lastName })
+    const patient = patientRepo.create({ firstName, lastName, phoneNumber })
     const result = await patientRepo.save(patient)
 
     return result
   }
 
-  async update(id: number, firstName: string, lastName: string) {
+  async update(
+    id: number,
+    firstName: string,
+    lastName: string,
+    phoneNumber: string
+  ) {
     const patientRepo = dataSourse.getRepository(PatientEntity)
     const patient = await patientRepo.findOneBy({ id })
-    patientRepo.merge(patient, { firstName, lastName })
+    patientRepo.merge(patient, { firstName, lastName, phoneNumber })
     const result = await patientRepo.save(patient)
 
     return result
