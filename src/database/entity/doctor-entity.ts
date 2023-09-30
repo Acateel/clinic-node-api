@@ -19,6 +19,11 @@ export class DoctorEntity {
   @Column()
   lastName: string
 
+  @Column({
+    default: 'general',
+  })
+  specialty: string
+
   @OneToMany(() => AppointmentEntity, (appointment) => appointment.doctor)
   appointments: AppointmentEntity[]
 
