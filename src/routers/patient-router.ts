@@ -1,5 +1,6 @@
 import express from 'express'
 import { patientService } from '../services/patient-service'
+import { FormatPhoneNumberMiddleware } from '../middlewares/phone-number-format-middleware'
 
 export const patientRouter = express.Router()
 
@@ -24,7 +25,7 @@ patientRouter.get('/:id', async (req, res, next) => {
 })
 
 // Create
-patientRouter.post('/', async (req, res, next) => {
+patientRouter.post('/', FormatPhoneNumberMiddleware, async (req, res, next) => {
   try {
     const { firstName, lastName, phoneNumber } = req.body
     const patient = await patientService.create(
@@ -39,20 +40,24 @@ patientRouter.post('/', async (req, res, next) => {
 })
 
 // Update
-patientRouter.patch('/:id', async (req, res, next) => {
-  try {
-    const { firstName, lastName, phoneNumber } = req.body
-    const patient = await patientService.update(
-      +req.params.id,
-      firstName,
-      lastName,
-      phoneNumber
-    )
-    res.status(200).json(patient)
-  } catch (error) {
-    next(error)
+patientRouter.patch(
+  '/:id',
+  FormatPhoneNumberMiddleware,
+  async (req, res, next) => {
+    try {
+      const { firstName, lastName, phoneNumber } = req.body
+      const patient = await patientService.update(
+        +req.params.id,
+        firstName,
+        lastName,
+        phoneNumber
+      )
+      res.status(200).json(patient)
+    } catch (error) {
+      next(error)
+    }
   }
-})
+)
 
 // Delete
 patientRouter.delete('/:id', async (req, res, next) => {
