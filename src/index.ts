@@ -5,7 +5,7 @@ import { doctorRouter } from './routers/doctor-router'
 import { patientRouter } from './routers/patient-router'
 import { appointmentRouter } from './routers/appointment-router'
 import { dataSourse } from './database/data-sourse'
-import { errorHandler } from './middlewares/error-handler'
+import { errorHandler } from './middlewares/error-handler-middleware'
 
 dotenv.config()
 
