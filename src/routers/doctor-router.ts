@@ -53,8 +53,8 @@ doctorRouter.patch('/:id', async (req, res, next) => {
 // Delete
 doctorRouter.delete('/:id', async (req, res, next) => {
   try {
-    const patient = await doctorService.delete(+req.params.id)
-    res.status(200).json(patient)
+    const doctor = await doctorService.delete(+req.params.id)
+    res.status(200).json(doctor)
   } catch (error) {
     next(error)
   }
