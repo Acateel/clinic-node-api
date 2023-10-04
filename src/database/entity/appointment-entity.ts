@@ -15,7 +15,10 @@ export class AppointmentEntity {
   id: number
 
   @Column()
-  time: Date
+  startTime: String
+
+  @Column()
+  endTime: String
 
   @ManyToOne(() => PatientEntity, (patient) => patient.appointments)
   patient: PatientEntity
