@@ -1,5 +1,6 @@
 import express from 'express'
 import { appointmentService } from '../services/appointment-service'
+import { AppointmentTimesParsingMiddleware } from '../middlewares/appointment-times-parsing-middleware'
 
 export const appointmentRouter = express.Router()
 
@@ -24,20 +25,24 @@ appointmentRouter.get('/:id', async (req, res, next) => {
 })
 
 // Create
-appointmentRouter.post('/', async (req, res, next) => {
-  try {
-    const { patientId, doctorId, startTime, endTime } = req.body
-    const appointment = await appointmentService.create(
-      patientId,
-      doctorId,
-      startTime,
-      endTime
-    )
-    res.status(200).json(appointment)
-  } catch (error) {
-    next(error)
+appointmentRouter.post(
+  '/',
+  AppointmentTimesParsingMiddleware,
+  async (req, res, next) => {
+    try {
+      const { patientId, doctorId, startTime, endTime } = req.body
+      const appointment = await appointmentService.create(
+        patientId,
+        doctorId,
+        startTime,
+        endTime
+      )
+      res.status(200).json(appointment)
+    } catch (error) {
+      next(error)
+    }
   }
-})
+)
 
 // Update
 appointmentRouter.patch('/:id', (req, res) => {
