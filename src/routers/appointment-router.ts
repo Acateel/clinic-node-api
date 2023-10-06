@@ -45,9 +45,24 @@ appointmentRouter.post(
 )
 
 // Update
-appointmentRouter.patch('/:id', (req, res) => {
-  res.status(501).json({ message: 'Not implemented' })
-})
+appointmentRouter.patch(
+  '/:id',
+  AppointmentTimesParsingMiddleware,
+  async (req, res, next) => {
+    try {
+      const { doctorId, startTime, endTime } = req.body
+      const appointment = await appointmentService.update(
+        +req.params.id,
+        doctorId,
+        startTime,
+        endTime
+      )
+      res.status(200).json(appointment)
+    } catch (error) {
+      next(error)
+    }
+  }
+)
 
 // Delete
 appointmentRouter.delete('/:id', async (req, res, next) => {
