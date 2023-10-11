@@ -7,7 +7,16 @@ export const appointmentRouter = express.Router()
 // Get
 appointmentRouter.get('/', async (req, res, next) => {
   try {
-    const appointments = await appointmentService.get()
+    const { doctorId, day } = req.query
+    let appointments
+    if (doctorId !== null && day !== null) {
+      appointments = await appointmentService.getByDoctorIdAndDay(
+        +doctorId,
+        new Date(day.toString())
+      )
+    } else {
+      appointments = await appointmentService.get()
+    }
     res.status(200).json(appointments)
   } catch (error) {
     next(error)
