@@ -148,7 +148,6 @@ class AppointmentService {
       endTime <= appointmentsByDay[0].startTime ||
       startTime >= appointmentsByDay[appointmentsByDay.length - 1].endTime
     ) {
-      console.log('[Debug] first if')
       return true
     }
 
@@ -157,7 +156,6 @@ class AppointmentService {
         startTime >= appointmentsByDay[i].endTime &&
         endTime <= appointmentsByDay[i + 1].startTime
       ) {
-        console.log('[Debug] second if')
         return true
       }
     }
