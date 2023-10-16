@@ -1,11 +1,10 @@
 /**
- * Convert phone number in format: (XXX) XXX-XXXX
+ * Convert phone number in format: +XXXXXXXX
  */
 export const formatPhoneNumber = (phoneNumber: string) => {
   var cleaned = phoneNumber.replace(/\D/g, '')
-  var match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
-  if (match) {
-    return '(' + match[1] + ') ' + match[2] + '-' + match[3]
+  if (cleaned.length >= 8) {
+    return `+${cleaned}`
   }
   return null
 }
