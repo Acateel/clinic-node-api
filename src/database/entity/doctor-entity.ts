@@ -24,7 +24,9 @@ export class DoctorEntity {
   })
   specialty: string
 
-  @OneToMany(() => AppointmentEntity, (appointment) => appointment.doctor)
+  @OneToMany(() => AppointmentEntity, (appointment) => appointment.doctor, {
+    cascade: true,
+  })
   appointments: AppointmentEntity[]
 
   @CreateDateColumn()

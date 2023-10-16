@@ -20,10 +20,14 @@ export class AppointmentEntity {
   @Column()
   endTime: Date
 
-  @ManyToOne(() => PatientEntity, (patient) => patient.appointments)
+  @ManyToOne(() => PatientEntity, (patient) => patient.appointments, {
+    onDelete: 'CASCADE',
+  })
   patient: PatientEntity
 
-  @ManyToOne(() => DoctorEntity, (doctor) => doctor.appointments)
+  @ManyToOne(() => DoctorEntity, (doctor) => doctor.appointments, {
+    onDelete: 'CASCADE',
+  })
   doctor: DoctorEntity
 
   @CreateDateColumn()
