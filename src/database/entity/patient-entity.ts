@@ -22,6 +22,7 @@ export class PatientEntity {
   @Column({
     nullable: true,
     length: 15,
+    unique: true,
   })
   phoneNumber: string
 
