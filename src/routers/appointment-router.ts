@@ -9,7 +9,7 @@ appointmentRouter.get('/', async (req, res, next) => {
   try {
     const { doctorId, day } = req.query
     let appointments
-    if (doctorId !== null && day !== null) {
+    if (doctorId !== undefined || day !== undefined) {
       appointments = await appointmentService.getByDoctorIdAndDay(
         +doctorId,
         new Date(day.toString())
