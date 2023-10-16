@@ -32,5 +32,5 @@ export class PatientEntity {
   createdAt: Date
 
   @UpdateDateColumn()
-  updateAt: Date
+  updatedAt: Date
 }

@@ -30,5 +30,5 @@ export class AppointmentEntity {
   createdAt: Date
 
   @UpdateDateColumn()
-  updateAt: Date
+  updatedAt: Date
 }
