@@ -6,6 +6,7 @@ import { patientRouter } from './routers/patient-router'
 import { appointmentRouter } from './routers/appointment-router'
 import { dataSourse } from './database/data-sourse'
 import { errorHandler } from './middlewares/error-handler-middleware'
+import { doctorScheduleRouter } from './routers/doctor-schedule-router'
 
 dotenv.config()
 
@@ -14,6 +15,7 @@ const app = express()
 app.use(express.json())
 
 app.use('/doctors', doctorRouter)
+app.use('/doctors-schedules', doctorScheduleRouter)
 app.use('/patients', patientRouter)
 app.use('/appointments', appointmentRouter)
 
