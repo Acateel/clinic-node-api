@@ -2,6 +2,7 @@ import { Between } from 'typeorm'
 import { dataSourse } from '../database/data-sourse'
 import { AppointmentEntity } from '../database/entity/appointment-entity'
 import createHttpError from 'http-errors'
+import { doctorScheduleService } from './doctor-schedule-service'
 
 class AppointmentService {
   async get() {
@@ -49,6 +50,16 @@ class AppointmentService {
   ) {
     const appointmentRepo = dataSourse.getRepository(AppointmentEntity)
 
+    const isTimesInDoctorSchedules =
+      await doctorScheduleService.isTimesInSchedule(
+        doctorId,
+        startTime,
+        endTime
+      )
+    if (!isTimesInDoctorSchedules) {
+      throw createHttpError(400, 'This time out of doctor schedule')
+    }
+
     const canAddNewAppointment = await this.checkForCreate(
       doctorId,
       startTime,
@@ -78,6 +89,16 @@ class AppointmentService {
     const appointmentRepo = dataSourse.getRepository(AppointmentEntity)
 
     const appointment = await appointmentRepo.findOneBy({ id: appointmentId })
+
+    const isTimesInDoctorSchedules =
+      await doctorScheduleService.isTimesInSchedule(
+        doctorId,
+        startTime,
+        endTime
+      )
+    if (!isTimesInDoctorSchedules) {
+      throw createHttpError(400, 'This time out of doctor schedule')
+    }
 
     const canUpdateAppointment = await this.checkForUpdate(
       appointment.id,
