@@ -1,3 +1,4 @@
+import { Between, LessThanOrEqual, MoreThanOrEqual } from 'typeorm'
 import { dataSourse } from '../database/data-sourse'
 import { DoctorScheduleEntity } from '../database/entity/doctor-schedule-entity'
 
@@ -48,6 +49,21 @@ class DoctorScheduleService {
     const scheduleRepo = dataSourse.getRepository(DoctorScheduleEntity)
     const result = await scheduleRepo.delete(id)
     return result
+  }
+
+  async isTimesInSchedule(doctorId: number, startTime: Date, endTime: Date) {
+    const scheduleRepo = dataSourse.getRepository(DoctorScheduleEntity)
+    const schedule = await scheduleRepo.findOneBy({
+      doctor: {
+        id: doctorId,
+      },
+      startTime: LessThanOrEqual(startTime),
+      endTime: MoreThanOrEqual(endTime),
+    })
+    if (schedule) {
+      return true
+    }
+    return false
   }
 }
 
