@@ -1,7 +1,8 @@
-import { Between } from 'typeorm'
+import { Between, LessThanOrEqual, MoreThanOrEqual } from 'typeorm'
 import { dataSourse } from '../database/data-sourse'
 import { AppointmentEntity } from '../database/entity/appointment-entity'
 import createHttpError from 'http-errors'
+import { doctorScheduleService } from './doctor-schedule-service'
 
 class AppointmentService {
   async get() {
@@ -41,6 +42,22 @@ class AppointmentService {
     return appointmentsByDay
   }
 
+  async getByDoctorSchedule(doctorId: number, startTime: Date, endTime: Date) {
+    const appointmentRepo = dataSourse.getRepository(AppointmentEntity)
+
+    const appointmentsBySchedule = await appointmentRepo.find({
+      where: {
+        doctor: {
+          id: doctorId,
+        },
+        startTime: MoreThanOrEqual(startTime),
+        endTime: LessThanOrEqual(endTime),
+      },
+    })
+
+    return appointmentsBySchedule
+  }
+
   async create(
     patientId: number,
     doctorId: number,
@@ -49,11 +66,23 @@ class AppointmentService {
   ) {
     const appointmentRepo = dataSourse.getRepository(AppointmentEntity)
 
+    const isTimesInDoctorSchedules =
+      await doctorScheduleService.isTimesInSchedule(
+        doctorId,
+        startTime,
+        endTime
+      )
+
+    if (!isTimesInDoctorSchedules) {
+      throw createHttpError(400, 'This time out of doctor schedule')
+    }
+
     const canAddNewAppointment = await this.checkForCreate(
       doctorId,
       startTime,
       endTime
     )
+
     if (!canAddNewAppointment) {
       throw createHttpError(400, 'Cannot add appointment in this time')
     }
@@ -78,6 +107,16 @@ class AppointmentService {
     const appointmentRepo = dataSourse.getRepository(AppointmentEntity)
 
     const appointment = await appointmentRepo.findOneBy({ id: appointmentId })
+
+    const isTimesInDoctorSchedules =
+      await doctorScheduleService.isTimesInSchedule(
+        doctorId,
+        startTime,
+        endTime
+      )
+    if (!isTimesInDoctorSchedules) {
+      throw createHttpError(400, 'This time out of doctor schedule')
+    }
 
     const canUpdateAppointment = await this.checkForUpdate(
       appointment.id,
