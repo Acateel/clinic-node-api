@@ -1,6 +1,8 @@
-import { Between, LessThanOrEqual, MoreThanOrEqual } from 'typeorm'
+import { LessThanOrEqual, MoreThanOrEqual } from 'typeorm'
 import { dataSourse } from '../database/data-sourse'
 import { DoctorScheduleEntity } from '../database/entity/doctor-schedule-entity'
+import { appointmentService } from './appointment-service'
+import createHttpError from 'http-errors'
 
 class DoctorScheduleService {
   async get() {
@@ -34,7 +36,28 @@ class DoctorScheduleService {
 
   async update(id: number, doctorId: number, startTime: Date, endTime: Date) {
     const scheduleRepo = dataSourse.getRepository(DoctorScheduleEntity)
-    const schedule = await scheduleRepo.findOneBy({ id })
+    const schedule = await scheduleRepo.findOne({
+      where: {
+        id,
+      },
+      relations: {
+        doctor: true,
+      },
+    })
+
+    const isNewScheduleCorrect = await this.isNewScheduleIncludeAppointments(
+      schedule,
+      startTime,
+      endTime
+    )
+    
+    if (!isNewScheduleCorrect) {
+      throw createHttpError(
+        400,
+        'Cannot update schedule, didnt include appointments'
+      )
+    }
+
     scheduleRepo.merge(schedule, {
       doctor: { id: doctorId },
       startTime,
@@ -64,6 +87,26 @@ class DoctorScheduleService {
       return true
     }
     return false
+  }
+
+  async isNewScheduleIncludeAppointments(
+    oldSchedule: DoctorScheduleEntity,
+    newStartTime: Date,
+    newEndTime: Date
+  ) {
+    const appointments = await appointmentService.getByDoctorSchedule(
+      oldSchedule.doctor.id,
+      oldSchedule.startTime,
+      oldSchedule.endTime
+    )
+
+    const newScheduleIncludeAppointments = appointments.every(
+      (appointment) =>
+        appointment.startTime >= newStartTime &&
+        appointment.endTime <= newEndTime
+    )
+
+    return newScheduleIncludeAppointments
   }
 }
 
