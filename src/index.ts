@@ -15,7 +15,7 @@ const app = express()
 app.use(express.json())
 
 app.use('/doctors', doctorRouter)
-app.use('/doctors-schedules', doctorScheduleRouter)
+app.use('/doctors/:doctorId/schedules', doctorScheduleRouter)
 app.use('/patients', patientRouter)
 app.use('/appointments', appointmentRouter)
 

@@ -2,12 +2,13 @@ import express from 'express'
 import { doctorScheduleService } from '../services/doctor-schedule-service'
 import { TimesParsingMiddleware } from '../middlewares/times-parsing-middleware'
 
-export const doctorScheduleRouter = express.Router()
+export const doctorScheduleRouter = express.Router({ mergeParams: true })
 
-// Get
+// Get by doctorId
 doctorScheduleRouter.get('/', async (req, res, next) => {
   try {
-    const schedules = await doctorScheduleService.get()
+    const { doctorId } = req.params as any
+    const schedules = await doctorScheduleService.getByDoctorId(doctorId)
     res.status(200).json(schedules)
   } catch (error) {
     next(error)
@@ -30,7 +31,8 @@ doctorScheduleRouter.post(
   TimesParsingMiddleware,
   async (req, res, next) => {
     try {
-      const { doctorId, startTime, endTime } = req.body
+      const { doctorId } = req.params as any
+      const { startTime, endTime } = req.body
       const schedule = await doctorScheduleService.create(
         +doctorId,
         startTime,
@@ -49,7 +51,8 @@ doctorScheduleRouter.patch(
   TimesParsingMiddleware,
   async (req, res, next) => {
     try {
-      const { doctorId, startTime, endTime } = req.body
+      const { doctorId } = req.params as any
+      const { startTime, endTime } = req.body
       const schedule = await doctorScheduleService.update(
         +req.params.id,
         doctorId,
