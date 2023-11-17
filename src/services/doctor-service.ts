@@ -20,7 +20,12 @@ class DoctorService {
 
   async create(firstName: string, lastName: string, specialty: string) {
     const doctorRepo = dataSourse.getRepository(DoctorEntity)
-    const doctor = doctorRepo.create({ firstName, lastName, specialty })
+
+    const doctor = new DoctorEntity()
+    doctor.firstName = firstName
+    doctor.lastName = lastName
+    doctor.specialty = specialty
+
     const result = await doctorRepo.save(doctor)
 
     return result
@@ -33,8 +38,12 @@ class DoctorService {
     specialty: string
   ) {
     const doctorRepo = dataSourse.getRepository(DoctorEntity)
+
     const doctor = await doctorRepo.findOneBy({ id })
-    doctorRepo.merge(doctor, { firstName, lastName, specialty })
+    doctor.firstName = firstName
+    doctor.lastName = lastName
+    doctor.specialty = specialty
+
     const result = await doctorRepo.save(doctor)
 
     return result
