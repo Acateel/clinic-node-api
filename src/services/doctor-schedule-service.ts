@@ -3,6 +3,8 @@ import { dataSourse } from '../database/data-sourse'
 import { DoctorScheduleEntity } from '../database/entity/doctor-schedule-entity'
 import { appointmentService } from './appointment-service'
 import createHttpError from 'http-errors'
+import { doctorService } from './doctor-service'
+import StatusCode from 'status-code-enum'
 
 class DoctorScheduleService {
   async get() {
@@ -25,17 +27,35 @@ class DoctorScheduleService {
 
   async create(doctorId: number, startTime: Date, endTime: Date) {
     const scheduleRepo = dataSourse.getRepository(DoctorScheduleEntity)
-    const schedule = scheduleRepo.create({
-      doctor: { id: doctorId },
-      startTime,
-      endTime,
-    })
+
+    const doctor = await doctorService.getById(doctorId)
+    if (!doctor) {
+      throw createHttpError(
+        StatusCode.ClientErrorNotFound,
+        'Doctor with doctorId dont found'
+      )
+    }
+
+    const schedule = new DoctorScheduleEntity()
+    schedule.doctor = doctor
+    schedule.startTime = startTime
+    schedule.endTime = endTime
+
     const result = await scheduleRepo.save(schedule)
     return result
   }
 
   async update(id: number, doctorId: number, startTime: Date, endTime: Date) {
     const scheduleRepo = dataSourse.getRepository(DoctorScheduleEntity)
+
+    const doctor = await doctorService.getById(doctorId)
+    if (!doctor) {
+      throw createHttpError(
+        StatusCode.ClientErrorNotFound,
+        'Doctor with doctorId dont found'
+      )
+    }
+
     const schedule = await scheduleRepo.findOne({
       where: {
         id,
@@ -50,19 +70,17 @@ class DoctorScheduleService {
       startTime,
       endTime
     )
-    
+
     if (!isNewScheduleCorrect) {
       throw createHttpError(
-        400,
+        StatusCode.ClientErrorBadRequest,
         'Cannot update schedule, didnt include appointments'
       )
     }
 
-    scheduleRepo.merge(schedule, {
-      doctor: { id: doctorId },
-      startTime,
-      endTime,
-    })
+    schedule.doctor = doctor
+    schedule.startTime = startTime
+    schedule.endTime = endTime
 
     const result = await scheduleRepo.save(schedule)
     return result

@@ -1,6 +1,7 @@
 import express from 'express'
 import { doctorScheduleService } from '../services/doctor-schedule-service'
 import { TimesParsingMiddleware } from '../middlewares/times-parsing-middleware'
+import StatusCode from 'status-code-enum'
 
 export const doctorScheduleRouter = express.Router({ mergeParams: true })
 
@@ -9,7 +10,7 @@ doctorScheduleRouter.get('/', async (req, res, next) => {
   try {
     const { doctorId } = req.params as any
     const schedules = await doctorScheduleService.getByDoctorId(doctorId)
-    res.status(200).json(schedules)
+    res.status(StatusCode.SuccessOK).json(schedules)
   } catch (error) {
     next(error)
   }
@@ -19,7 +20,7 @@ doctorScheduleRouter.get('/', async (req, res, next) => {
 doctorScheduleRouter.get('/:id', async (req, res, next) => {
   try {
     const schedule = await doctorScheduleService.getById(+req.params.id)
-    res.status(200).json(schedule)
+    res.status(StatusCode.SuccessOK).json(schedule)
   } catch (error) {
     next(error)
   }
@@ -38,7 +39,7 @@ doctorScheduleRouter.post(
         startTime,
         endTime
       )
-      res.status(200).json(schedule)
+      res.status(StatusCode.SuccessCreated).json(schedule)
     } catch (error) {
       next(error)
     }
@@ -59,7 +60,7 @@ doctorScheduleRouter.patch(
         startTime,
         endTime
       )
-      res.status(200).json(schedule)
+      res.status(StatusCode.SuccessOK).json(schedule)
     } catch (error) {
       next(error)
     }
@@ -70,7 +71,7 @@ doctorScheduleRouter.patch(
 doctorScheduleRouter.delete('/:id', async (req, res, next) => {
   try {
     const result = await doctorScheduleService.delete(+req.params.id)
-    res.status(200).json(result)
+    res.status(StatusCode.SuccessOK).json(result)
   } catch (error) {
     next(error)
   }

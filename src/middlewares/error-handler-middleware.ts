@@ -1,9 +1,10 @@
 import { ErrorRequestHandler } from 'express'
 import { isHttpError } from 'http-errors'
+import StatusCode from 'status-code-enum'
 
 export const errorHandler: ErrorRequestHandler = (error, req, res, next) => {
   console.error('[SERVER ERROR]', error)
-  let statusCode = 500
+  let statusCode = StatusCode.ServerErrorInternal
   let errorMessage = 'An unknown error occured'
 
   if (isHttpError(error)) {

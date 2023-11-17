@@ -1,5 +1,6 @@
 import { RequestHandler } from 'express'
 import createHttpError from 'http-errors'
+import StatusCode from 'status-code-enum'
 
 export const AppointmentTimesParsingMiddleware: RequestHandler = (
   req,
@@ -12,20 +13,38 @@ export const AppointmentTimesParsingMiddleware: RequestHandler = (
     const now = new Date()
 
     if (startTime < now) {
-      next(createHttpError(400, 'Start time cannot be in past'))
+      next(
+        createHttpError(
+          StatusCode.ClientErrorBadRequest,
+          'Start time cannot be in past'
+        )
+      )
     }
 
     if (startTime > endTime) {
-      next(createHttpError(400, 'Start time cannot be after end time'))
+      next(
+        createHttpError(
+          StatusCode.ClientErrorBadRequest,
+          'Start time cannot be after end time'
+        )
+      )
     }
 
     if (startTime.toISOString() === endTime.toISOString()) {
-      next(createHttpError(400, 'Start and end times connot be one the same'))
+      next(
+        createHttpError(
+          StatusCode.ClientErrorBadRequest,
+          'Start and end times connot be one the same'
+        )
+      )
     }
 
     if (startTime.toDateString() !== endTime.toDateString()) {
       next(
-        createHttpError(400, 'Start and end times connot be in different days')
+        createHttpError(
+          StatusCode.ClientErrorBadRequest,
+          'Start and end times connot be in different days'
+        )
       )
     }
 
@@ -33,6 +52,6 @@ export const AppointmentTimesParsingMiddleware: RequestHandler = (
     req.body.endTime = endTime
     next()
   } catch (error) {
-    next(createHttpError(400, 'Invalid time'))
+    next(createHttpError(StatusCode.ClientErrorBadRequest, 'Invalid time'))
   }
 }
