@@ -3,6 +3,7 @@ import { dataSourse } from '../database/data-sourse'
 import { DoctorScheduleEntity } from '../database/entity/doctor-schedule-entity'
 import { appointmentService } from './appointment-service'
 import createHttpError from 'http-errors'
+import { doctorService } from './doctor-service'
 
 class DoctorScheduleService {
   async get() {
@@ -25,11 +26,17 @@ class DoctorScheduleService {
 
   async create(doctorId: number, startTime: Date, endTime: Date) {
     const scheduleRepo = dataSourse.getRepository(DoctorScheduleEntity)
-    const schedule = scheduleRepo.create({
-      doctor: { id: doctorId },
-      startTime,
-      endTime,
-    })
+
+    const doctor = await doctorService.getById(doctorId)
+    if (!doctor) {
+      throw createHttpError(400, 'Doctor with doctorId dont found')
+    }
+
+    const schedule = new DoctorScheduleEntity()
+    schedule.doctor = doctor
+    schedule.startTime = startTime
+    schedule.endTime = endTime
+
     const result = await scheduleRepo.save(schedule)
     return result
   }
@@ -50,7 +57,7 @@ class DoctorScheduleService {
       startTime,
       endTime
     )
-    
+
     if (!isNewScheduleCorrect) {
       throw createHttpError(
         400,
@@ -58,11 +65,14 @@ class DoctorScheduleService {
       )
     }
 
-    scheduleRepo.merge(schedule, {
-      doctor: { id: doctorId },
-      startTime,
-      endTime,
-    })
+    const doctor = await doctorService.getById(doctorId)
+    if (!doctor) {
+      throw createHttpError(400, 'Doctor with doctorId dont found')
+    }
+
+    schedule.doctor = doctor
+    schedule.startTime = startTime
+    schedule.endTime = endTime
 
     const result = await scheduleRepo.save(schedule)
     return result
