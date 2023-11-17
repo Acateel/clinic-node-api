@@ -5,6 +5,7 @@ import createHttpError from 'http-errors'
 import { doctorScheduleService } from './doctor-schedule-service'
 import { patientService } from './patient-service'
 import { doctorService } from './doctor-service'
+import StatusCode from 'status-code-enum'
 
 class AppointmentService {
   async get() {
@@ -70,12 +71,18 @@ class AppointmentService {
 
     const patient = await patientService.getById(patientId)
     if (!patient) {
-      throw createHttpError(400, 'Patient with patientId dont found')
+      throw createHttpError(
+        StatusCode.ClientErrorNotFound,
+        'Patient with patientId dont found'
+      )
     }
 
     const doctor = await doctorService.getById(doctorId)
     if (!doctor) {
-      throw createHttpError(400, 'Doctor with doctorId dont found')
+      throw createHttpError(
+        StatusCode.ClientErrorNotFound,
+        'Doctor with doctorId dont found'
+      )
     }
 
     const isTimesInDoctorSchedules =
@@ -86,7 +93,10 @@ class AppointmentService {
       )
 
     if (!isTimesInDoctorSchedules) {
-      throw createHttpError(400, 'This time out of doctor schedule')
+      throw createHttpError(
+        StatusCode.ClientErrorBadRequest,
+        'This time out of doctor schedule'
+      )
     }
 
     const canAddNewAppointment = await this.checkForCreate(
@@ -96,7 +106,10 @@ class AppointmentService {
     )
 
     if (!canAddNewAppointment) {
-      throw createHttpError(400, 'Cannot add appointment in this time')
+      throw createHttpError(
+        StatusCode.ClientErrorBadRequest,
+        'Cannot add appointment in this time'
+      )
     }
 
     const appointment = new AppointmentEntity()
@@ -122,7 +135,10 @@ class AppointmentService {
 
     const doctor = await doctorService.getById(doctorId)
     if (!doctor) {
-      throw createHttpError(400, 'Doctor with doctorId dont found')
+      throw createHttpError(
+        StatusCode.ClientErrorNotFound,
+        'Doctor with doctorId dont found'
+      )
     }
 
     const isTimesInDoctorSchedules =
@@ -133,7 +149,10 @@ class AppointmentService {
       )
 
     if (!isTimesInDoctorSchedules) {
-      throw createHttpError(400, 'This time out of doctor schedule')
+      throw createHttpError(
+        StatusCode.ClientErrorBadRequest,
+        'This time out of doctor schedule'
+      )
     }
 
     const canUpdateAppointment = await this.checkForUpdate(
@@ -144,7 +163,10 @@ class AppointmentService {
     )
 
     if (!canUpdateAppointment) {
-      throw createHttpError(400, 'Cannot update appointment in this time')
+      throw createHttpError(
+        StatusCode.ClientErrorBadRequest,
+        'Cannot update appointment in this time'
+      )
     }
 
     appointment.doctor = doctor

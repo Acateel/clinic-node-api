@@ -1,5 +1,6 @@
 import express from 'express'
 import { doctorService } from '../services/doctor-service'
+import StatusCode from 'status-code-enum'
 
 export const doctorRouter = express.Router()
 
@@ -7,7 +8,7 @@ export const doctorRouter = express.Router()
 doctorRouter.get('/', async (req, res, next) => {
   try {
     const doctors = await doctorService.get()
-    res.status(200).json(doctors)
+    res.status(StatusCode.SuccessOK).json(doctors)
   } catch (error) {
     next(error)
   }
@@ -17,7 +18,7 @@ doctorRouter.get('/', async (req, res, next) => {
 doctorRouter.get('/:id', async (req, res, next) => {
   try {
     const doctor = await doctorService.getById(+req.params.id)
-    res.status(200).json(doctor)
+    res.status(StatusCode.SuccessOK).json(doctor)
   } catch (error) {
     next(error)
   }
@@ -28,7 +29,7 @@ doctorRouter.post('/', async (req, res, next) => {
   try {
     const { firstName, lastName, specialty } = req.body
     const doctor = await doctorService.create(firstName, lastName, specialty)
-    res.status(200).json(doctor)
+    res.status(StatusCode.SuccessCreated).json(doctor)
   } catch (error) {
     next(error)
   }
@@ -44,7 +45,7 @@ doctorRouter.patch('/:id', async (req, res, next) => {
       lastName,
       specialty
     )
-    res.status(200).json(doctor)
+    res.status(StatusCode.SuccessOK).json(doctor)
   } catch (error) {
     next(error)
   }
@@ -54,7 +55,7 @@ doctorRouter.patch('/:id', async (req, res, next) => {
 doctorRouter.delete('/:id', async (req, res, next) => {
   try {
     const doctor = await doctorService.delete(+req.params.id)
-    res.status(200).json(doctor)
+    res.status(StatusCode.SuccessOK).json(doctor)
   } catch (error) {
     next(error)
   }

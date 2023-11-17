@@ -4,6 +4,7 @@ import { DoctorScheduleEntity } from '../database/entity/doctor-schedule-entity'
 import { appointmentService } from './appointment-service'
 import createHttpError from 'http-errors'
 import { doctorService } from './doctor-service'
+import StatusCode from 'status-code-enum'
 
 class DoctorScheduleService {
   async get() {
@@ -29,7 +30,10 @@ class DoctorScheduleService {
 
     const doctor = await doctorService.getById(doctorId)
     if (!doctor) {
-      throw createHttpError(400, 'Doctor with doctorId dont found')
+      throw createHttpError(
+        StatusCode.ClientErrorNotFound,
+        'Doctor with doctorId dont found'
+      )
     }
 
     const schedule = new DoctorScheduleEntity()
@@ -43,6 +47,15 @@ class DoctorScheduleService {
 
   async update(id: number, doctorId: number, startTime: Date, endTime: Date) {
     const scheduleRepo = dataSourse.getRepository(DoctorScheduleEntity)
+
+    const doctor = await doctorService.getById(doctorId)
+    if (!doctor) {
+      throw createHttpError(
+        StatusCode.ClientErrorNotFound,
+        'Doctor with doctorId dont found'
+      )
+    }
+
     const schedule = await scheduleRepo.findOne({
       where: {
         id,
@@ -60,14 +73,9 @@ class DoctorScheduleService {
 
     if (!isNewScheduleCorrect) {
       throw createHttpError(
-        400,
+        StatusCode.ClientErrorBadRequest,
         'Cannot update schedule, didnt include appointments'
       )
-    }
-
-    const doctor = await doctorService.getById(doctorId)
-    if (!doctor) {
-      throw createHttpError(400, 'Doctor with doctorId dont found')
     }
 
     schedule.doctor = doctor

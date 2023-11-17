@@ -1,6 +1,7 @@
 import express from 'express'
 import { patientService } from '../services/patient-service'
 import { FormatPhoneNumberMiddleware } from '../middlewares/phone-number-format-middleware'
+import StatusCode from 'status-code-enum'
 
 export const patientRouter = express.Router()
 
@@ -8,7 +9,7 @@ export const patientRouter = express.Router()
 patientRouter.get('/', async (req, res, next) => {
   try {
     const patients = await patientService.get()
-    res.status(200).json(patients)
+    res.status(StatusCode.SuccessOK).json(patients)
   } catch (error) {
     next(error)
   }
@@ -18,7 +19,7 @@ patientRouter.get('/', async (req, res, next) => {
 patientRouter.get('/:id', async (req, res, next) => {
   try {
     const patient = await patientService.getById(+req.params.id)
-    res.status(200).json(patient)
+    res.status(StatusCode.SuccessOK).json(patient)
   } catch (error) {
     next(error)
   }
@@ -33,7 +34,7 @@ patientRouter.post('/', FormatPhoneNumberMiddleware, async (req, res, next) => {
       lastName,
       phoneNumber
     )
-    res.status(200).json(patient)
+    res.status(StatusCode.SuccessCreated).json(patient)
   } catch (error) {
     next(error)
   }
@@ -52,7 +53,7 @@ patientRouter.patch(
         lastName,
         phoneNumber
       )
-      res.status(200).json(patient)
+      res.status(StatusCode.SuccessOK).json(patient)
     } catch (error) {
       next(error)
     }
@@ -63,7 +64,7 @@ patientRouter.patch(
 patientRouter.delete('/:id', async (req, res, next) => {
   try {
     const patient = await patientService.delete(+req.params.id)
-    res.status(200).json(patient)
+    res.status(StatusCode.SuccessOK).json(patient)
   } catch (error) {
     next(error)
   }
