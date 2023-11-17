@@ -26,7 +26,7 @@ export class DoctorEntity {
   specialty: string
 
   @OneToMany(() => AppointmentEntity, (appointment) => appointment.doctor, {
-    cascade: true,
+    cascade: ['remove'],
   })
   appointments: AppointmentEntity[]
 
@@ -34,7 +34,7 @@ export class DoctorEntity {
     () => DoctorScheduleEntity,
     (doctorSchedule) => doctorSchedule.doctor,
     {
-      cascade: true,
+      cascade: ['remove'],
     }
   )
   schedule: DoctorScheduleEntity[]
