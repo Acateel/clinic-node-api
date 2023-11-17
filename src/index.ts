@@ -26,8 +26,9 @@ async function setupApplication() {
   console.log('[SERVER_DATABASE] Data Source has been initialized!')
 
   const port = process.env.PORT
+  const url = process.env.URL
   app.listen(port, () => {
-    console.log(`[SERVER]: Server is running at http://localhost:${port}`)
+    console.log(`[SERVER]: Server is running at ${url}:${port}`)
   })
 }
 
