@@ -2,9 +2,9 @@ import { dataSourse } from '../database/data-sourse'
 import { DoctorEntity } from '../database/entity/doctor-entity'
 
 class DoctorService {
-  async get() {
+  async get(filter: any) {
     const doctorRepo = dataSourse.getRepository(DoctorEntity)
-    const doctors = await doctorRepo.find()
+    const doctors = await doctorRepo.findBy(this.convertFilter(filter))
 
     return doctors
   }
@@ -54,6 +54,20 @@ class DoctorService {
     const result = await doctorRepo.delete(id)
 
     return result
+  }
+
+  convertFilter(filter: any) {
+    const where: any = {}
+
+    if (filter.firstName) {
+      where.firstName = filter.firstName
+    }
+
+    if (filter.specialty) {
+      where.specialty = filter.specialty
+    }
+
+    return where
   }
 }
 

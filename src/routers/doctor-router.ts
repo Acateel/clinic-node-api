@@ -7,7 +7,7 @@ export const doctorRouter = express.Router()
 // Get
 doctorRouter.get('/', async (req, res, next) => {
   try {
-    const doctors = await doctorService.get()
+    const doctors = await doctorService.get(req.query)
     res.status(StatusCode.SuccessOK).json(doctors)
   } catch (error) {
     next(error)
