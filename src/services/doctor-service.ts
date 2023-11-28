@@ -75,6 +75,8 @@ class DoctorService {
   convertToFilteredQuery(query: SelectQueryBuilder<DoctorEntity>, filter: any) {
     let filteredQuery = query
 
+    // filter by first name and specialty
+
     if (filter.firstName) {
       filteredQuery = filteredQuery.andWhere('doctor.firstName = :firstName', {
         firstName: filter.firstName,
@@ -85,6 +87,13 @@ class DoctorService {
       filteredQuery = filteredQuery.andWhere('doctor.specialty = :specialty', {
         specialty: filter.specialty,
       })
+    }
+
+    // pagination
+    if (filter.page && filter.pageSize) {
+      filteredQuery = filteredQuery
+        .skip((filter.page - 1) * filter.pageSize)
+        .take(filter.pageSize)
     }
 
     return filteredQuery
