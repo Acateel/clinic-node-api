@@ -89,7 +89,17 @@ class DoctorService {
       })
     }
 
+    // filter by ids
+
+    if (filter.ids) {
+      const parsedIds = JSON.parse(filter.ids)
+      filteredQuery = filteredQuery.andWhere('doctor.id IN (:...ids)', {
+        ids: parsedIds,
+      })
+    }
+
     // pagination
+
     if (filter.page && filter.pageSize) {
       filteredQuery = filteredQuery
         .skip((filter.page - 1) * filter.pageSize)
