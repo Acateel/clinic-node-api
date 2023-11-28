@@ -1,10 +1,25 @@
+import { SelectQueryBuilder } from 'typeorm'
 import { dataSourse } from '../database/data-sourse'
 import { DoctorEntity } from '../database/entity/doctor-entity'
 
 class DoctorService {
   async get(filter: any) {
     const doctorRepo = dataSourse.getRepository(DoctorEntity)
-    const doctors = await doctorRepo.findBy(this.convertFilter(filter))
+
+    const doctorsQuery = doctorRepo
+      .createQueryBuilder('doctor')
+      .leftJoin('doctor.appointments', 'AppointmentEntity')
+      .loadRelationCountAndMap(
+        'doctor.appointmentsCount',
+        'doctor.appointments'
+      )
+
+    const doctors: any[] = await this.addFilteredQuery(
+      doctorsQuery,
+      filter
+    ).getMany()
+
+    doctors.sort((a, b) => a.appointmentsCount - b.appointmentsCount).reverse()
 
     return doctors
   }
@@ -56,18 +71,22 @@ class DoctorService {
     return result
   }
 
-  convertFilter(filter: any) {
-    const where: any = {}
+  addFilteredQuery(query: SelectQueryBuilder<DoctorEntity>, filter: any) {
+    let filteredQuery = query
 
     if (filter.firstName) {
-      where.firstName = filter.firstName
+      filteredQuery = filteredQuery.andWhere('doctor.firstName = :firstName', {
+        firstName: filter.firstName,
+      })
     }
 
     if (filter.specialty) {
-      where.specialty = filter.specialty
+      filteredQuery = filteredQuery.andWhere('doctor.specialty = :specialty', {
+        specialty: filter.specialty,
+      })
     }
 
-    return where
+    return filteredQuery
   }
 }
 
