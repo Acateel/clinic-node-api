@@ -1,10 +1,11 @@
 import { dataSourse } from '../database/data-sourse'
 import { PatientEntity } from '../database/entity/patient-entity'
+import { formatPhoneNumber } from '../util/format-phone-number'
 
 class PatientService {
-  async get() {
+  async get(filter: any) {
     const patientRepo = dataSourse.getRepository(PatientEntity)
-    const patients = await patientRepo.find()
+    const patients = await patientRepo.findBy(this.convertFilter(filter))
 
     return patients
   }
@@ -20,7 +21,12 @@ class PatientService {
 
   async create(firstName: string, lastName: string, phoneNumber: string) {
     const patientRepo = dataSourse.getRepository(PatientEntity)
-    const patient = patientRepo.create({ firstName, lastName, phoneNumber })
+
+    const patient = new PatientEntity()
+    patient.firstName = firstName
+    patient.lastName = lastName
+    patient.phoneNumber = phoneNumber
+
     const result = await patientRepo.save(patient)
 
     return result
@@ -33,8 +39,12 @@ class PatientService {
     phoneNumber: string
   ) {
     const patientRepo = dataSourse.getRepository(PatientEntity)
+
     const patient = await patientRepo.findOneBy({ id })
-    patientRepo.merge(patient, { firstName, lastName, phoneNumber })
+    patient.firstName = firstName
+    patient.lastName = lastName
+    patient.phoneNumber = phoneNumber
+
     const result = await patientRepo.save(patient)
 
     return result
@@ -45,6 +55,20 @@ class PatientService {
     const result = await patientRepo.delete(id)
 
     return result
+  }
+
+  convertFilter(filter: any) {
+    const where: any = {}
+
+    if (filter.firstName) {
+      where.firstName = filter.firstName
+    }
+
+    if (filter.phoneNumber && formatPhoneNumber(filter.phoneNumber)) {
+      where.phoneNumber = formatPhoneNumber(filter.phoneNumber)
+    }
+
+    return where
   }
 }
 

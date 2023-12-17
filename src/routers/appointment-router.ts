@@ -1,6 +1,7 @@
 import express from 'express'
 import { appointmentService } from '../services/appointment-service'
 import { AppointmentTimesParsingMiddleware } from '../middlewares/appointment-times-parsing-middleware'
+import StatusCode from 'status-code-enum'
 
 export const appointmentRouter = express.Router()
 
@@ -17,7 +18,7 @@ appointmentRouter.get('/', async (req, res, next) => {
     } else {
       appointments = await appointmentService.get()
     }
-    res.status(200).json(appointments)
+    res.status(StatusCode.SuccessOK).json(appointments)
   } catch (error) {
     next(error)
   }
@@ -27,7 +28,7 @@ appointmentRouter.get('/', async (req, res, next) => {
 appointmentRouter.get('/:id', async (req, res, next) => {
   try {
     const appointment = await appointmentService.getById(+req.params.id)
-    res.status(200).json(appointment)
+    res.status(StatusCode.SuccessOK).json(appointment)
   } catch (error) {
     next(error)
   }
@@ -46,7 +47,7 @@ appointmentRouter.post(
         startTime,
         endTime
       )
-      res.status(200).json(appointment)
+      res.status(StatusCode.SuccessCreated).json(appointment)
     } catch (error) {
       next(error)
     }
@@ -66,7 +67,7 @@ appointmentRouter.patch(
         startTime,
         endTime
       )
-      res.status(200).json(appointment)
+      res.status(StatusCode.SuccessOK).json(appointment)
     } catch (error) {
       next(error)
     }
@@ -77,7 +78,7 @@ appointmentRouter.patch(
 appointmentRouter.delete('/:id', async (req, res, next) => {
   try {
     const appointment = await appointmentService.delete(+req.params.id)
-    res.status(200).json(appointment)
+    res.status(StatusCode.SuccessOK).json(appointment)
   } catch (error) {
     next(error)
   }

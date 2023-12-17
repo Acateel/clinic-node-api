@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm'
 import { AppointmentEntity } from './appointment-entity'
+import { DoctorScheduleEntity } from './doctor-schedule-entity'
 
 @Entity()
 export class DoctorEntity {
@@ -25,9 +26,18 @@ export class DoctorEntity {
   specialty: string
 
   @OneToMany(() => AppointmentEntity, (appointment) => appointment.doctor, {
-    cascade: true,
+    cascade: ['remove'],
   })
   appointments: AppointmentEntity[]
+
+  @OneToMany(
+    () => DoctorScheduleEntity,
+    (doctorSchedule) => doctorSchedule.doctor,
+    {
+      cascade: ['remove'],
+    }
+  )
+  schedule: DoctorScheduleEntity[]
 
   @CreateDateColumn()
   createdAt: Date
