@@ -1,7 +1,11 @@
-import { Between } from 'typeorm'
+import { Between, LessThanOrEqual, MoreThanOrEqual } from 'typeorm'
 import { dataSourse } from '../database/data-sourse'
 import { AppointmentEntity } from '../database/entity/appointment-entity'
 import createHttpError from 'http-errors'
+import { doctorScheduleService } from './doctor-schedule-service'
+import { patientService } from './patient-service'
+import { doctorService } from './doctor-service'
+import StatusCode from 'status-code-enum'
 
 class AppointmentService {
   async get() {
@@ -41,6 +45,22 @@ class AppointmentService {
     return appointmentsByDay
   }
 
+  async getByDoctorSchedule(doctorId: number, startTime: Date, endTime: Date) {
+    const appointmentRepo = dataSourse.getRepository(AppointmentEntity)
+
+    const appointmentsBySchedule = await appointmentRepo.find({
+      where: {
+        doctor: {
+          id: doctorId,
+        },
+        startTime: MoreThanOrEqual(startTime),
+        endTime: LessThanOrEqual(endTime),
+      },
+    })
+
+    return appointmentsBySchedule
+  }
+
   async create(
     patientId: number,
     doctorId: number,
@@ -49,21 +69,55 @@ class AppointmentService {
   ) {
     const appointmentRepo = dataSourse.getRepository(AppointmentEntity)
 
+    const patient = await patientService.getById(patientId)
+    if (!patient) {
+      throw createHttpError(
+        StatusCode.ClientErrorNotFound,
+        'Patient with patientId dont found'
+      )
+    }
+
+    const doctor = await doctorService.getById(doctorId)
+    if (!doctor) {
+      throw createHttpError(
+        StatusCode.ClientErrorNotFound,
+        'Doctor with doctorId dont found'
+      )
+    }
+
+    const isTimesInDoctorSchedules =
+      await doctorScheduleService.isTimesInSchedule(
+        doctorId,
+        startTime,
+        endTime
+      )
+
+    if (!isTimesInDoctorSchedules) {
+      throw createHttpError(
+        StatusCode.ClientErrorBadRequest,
+        'This time out of doctor schedule'
+      )
+    }
+
     const canAddNewAppointment = await this.checkForCreate(
       doctorId,
       startTime,
       endTime
     )
+
     if (!canAddNewAppointment) {
-      throw createHttpError(400, 'Cannot add appointment in this time')
+      throw createHttpError(
+        StatusCode.ClientErrorBadRequest,
+        'Cannot add appointment in this time'
+      )
     }
 
-    const appointment = appointmentRepo.create({
-      patient: { id: patientId },
-      doctor: { id: doctorId },
-      startTime,
-      endTime,
-    })
+    const appointment = new AppointmentEntity()
+    appointment.patient = patient
+    appointment.doctor = doctor
+    appointment.startTime = startTime
+    appointment.endTime = endTime
+
     const result = await appointmentRepo.save(appointment)
 
     return result
@@ -79,21 +133,46 @@ class AppointmentService {
 
     const appointment = await appointmentRepo.findOneBy({ id: appointmentId })
 
+    const doctor = await doctorService.getById(doctorId)
+    if (!doctor) {
+      throw createHttpError(
+        StatusCode.ClientErrorNotFound,
+        'Doctor with doctorId dont found'
+      )
+    }
+
+    const isTimesInDoctorSchedules =
+      await doctorScheduleService.isTimesInSchedule(
+        doctorId,
+        startTime,
+        endTime
+      )
+
+    if (!isTimesInDoctorSchedules) {
+      throw createHttpError(
+        StatusCode.ClientErrorBadRequest,
+        'This time out of doctor schedule'
+      )
+    }
+
     const canUpdateAppointment = await this.checkForUpdate(
       appointment.id,
       doctorId,
       startTime,
       endTime
     )
+
     if (!canUpdateAppointment) {
-      throw createHttpError(400, 'Cannot update appointment in this time')
+      throw createHttpError(
+        StatusCode.ClientErrorBadRequest,
+        'Cannot update appointment in this time'
+      )
     }
 
-    appointmentRepo.merge(appointment, {
-      doctor: { id: doctorId },
-      startTime,
-      endTime,
-    })
+    appointment.doctor = doctor
+    appointment.startTime = startTime
+    appointment.endTime = endTime
+
     const result = await appointmentRepo.save(appointment)
     return result
   }

@@ -7,6 +7,7 @@ Backend api for clinic by express and typeorm
 First, add env variables:
 ```
 PORT
+URL
 TYPEORM_HOST
 TYPEORM_USERNAME
 TYPEORM_PASSWORD
