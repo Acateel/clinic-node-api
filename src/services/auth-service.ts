@@ -16,9 +16,11 @@ class AuthService {
     if (!email && !phoneNumber) {
       throw createHttpError(
         StatusCode.ClientErrorNotFound,
-        'Credentials incorrect'
+        'Credentials incorrect, need email or phone number for signup'
       )
     }
+
+    await this.checkUserExist(email, phoneNumber)
 
     const userRepo = dataSourse.getRepository(UserEntity)
 
@@ -54,6 +56,30 @@ class AuthService {
     }
 
     return getToken(user)
+  }
+
+  async checkUserExist(email: string, phoneNumber: string) {
+    if (email) {
+      const user = await userService.getByEmail(email)
+
+      if (user) {
+        throw createHttpError(
+          StatusCode.ClientErrorConflict,
+          'User with this email exist'
+        )
+      }
+    }
+
+    if (phoneNumber) {
+      const user = await userService.getByPhoneNumber(phoneNumber)
+
+      if (user) {
+        throw createHttpError(
+          StatusCode.ClientErrorConflict,
+          'User with this phoneNumber exist'
+        )
+      }
+    }
   }
 }
 
