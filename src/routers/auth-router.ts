@@ -3,6 +3,7 @@ import { authService } from '../services/auth-service'
 import { UserRole } from '../database/entity/user-entity'
 import StatusCode from 'status-code-enum'
 import { PasswordMatchMIddleware } from '../middlewares/password-match-middleware'
+import { LoginExistMiddleware } from '../middlewares/login-exist-middleware'
 
 export const authRouter = express.Router()
 
@@ -22,14 +23,19 @@ authRouter.post('/signup', PasswordMatchMIddleware, async (req, res, next) => {
 })
 
 // sign in
-authRouter.post('/signin', PasswordMatchMIddleware, async (req, res, next) => {
-  try {
-    const { login, password } = req.body
+authRouter.post(
+  '/signin',
+  LoginExistMiddleware,
+  PasswordMatchMIddleware,
+  async (req, res, next) => {
+    try {
+      const { login, password } = req.body
 
-    const token = await authService.signin(login, password)
+      const token = await authService.signin(login, password)
 
-    res.status(StatusCode.SuccessOK).json(token)
-  } catch (error) {
-    next(error)
+      res.status(StatusCode.SuccessOK).json(token)
+    } catch (error) {
+      next(error)
+    }
   }
-})
+)
