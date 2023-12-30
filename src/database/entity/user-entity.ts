@@ -47,9 +47,9 @@ export class UserEntity {
   })
   Authcodes: AuthcodeEntity[]
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date
 }
