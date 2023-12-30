@@ -45,3 +45,16 @@ authRouter.post(
     }
   }
 )
+
+// sign by email
+authRouter.post('/signbyemail', async (req, res, next) => {
+  try {
+    const { email, code } = req.body
+
+    const result = await authService.signByEmail(email, code)
+
+    res.status(StatusCode.SuccessOK).json(result)
+  } catch (error) {
+    next(error)
+  }
+})
