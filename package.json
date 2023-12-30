@@ -8,7 +8,8 @@
     "start": "node dist/index.js",
     "typeorm": "typeorm-ts-node-commonjs",
     "migration:generate": "yarn typeorm migration:generate -d ./src/database/data-sourse -p",
-    "migration:run": "yarn typeorm migration:run -d ./src/database/data-sourse"
+    "migration:run": "yarn typeorm migration:run -d ./src/database/data-sourse",
+    "migration:revert": "yarn typeorm migration:revert -d ./src/database/data-sourse"
   },
   "license": "MIT",
   "devDependencies": {
