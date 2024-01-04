@@ -63,3 +63,16 @@ authRouter.post(
     }
   }
 )
+
+// sign by phone number
+authRouter.post('/signbyphone', async (req, res, next) => {
+  try {
+    const { phoneNumber, code } = req.body
+
+    const result = await authService.signByPhoneNumber(phoneNumber, code)
+
+    res.status(StatusCode.SuccessOK).json(result)
+  } catch (error) {
+    next(error)
+  }
+})
