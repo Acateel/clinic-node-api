@@ -9,6 +9,7 @@ import { generateCode } from '../util/generate-code'
 import { authcodeService } from './authcode-service'
 import { sendAuthCode } from '../util/email-sender'
 import { AuthcodeEntity } from '../database/entity/authcode-entity'
+import { sendAuthCodeBySMS } from '../util/sms-sender'
 
 class AuthService {
   async signup(
@@ -85,6 +86,45 @@ class AuthService {
       return { message: 'code sended' }
     }
 
+    const token = await this.getUserTokenByCode(user, code)
+
+    return token
+  }
+
+  async signByPhoneNumber(phoneNumber: string, code: string) {
+    const user = await userService.getByPhoneNumber(phoneNumber)
+
+    if (!user) {
+      // after will add registration
+      throw createHttpError(
+        StatusCode.ClientErrorNotFound,
+        'Credentials incorrect, user not found'
+      )
+    }
+
+    if (!code) {
+      const generatedCode = generateCode()
+
+      // save code
+      await authcodeService.create(user, generatedCode)
+
+      // send code
+      await sendAuthCodeBySMS(phoneNumber, generatedCode)
+
+      return { message: 'code sended' }
+    }
+
+    const token = await this.getUserTokenByCode(user, code)
+
+    return token
+  }
+
+  /**
+   * Get Token if code verify and delete authcodes, else trrow error
+   * @param user
+   * @param code
+   */
+  async getUserTokenByCode(user: UserEntity, code: string) {
     //check code
 
     const authcodes = await authcodeService.getByUser(user)
