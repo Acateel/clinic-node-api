@@ -12,7 +12,7 @@ const transport = nodemailer.createTransport({
   },
 })
 
-export async function sendAuthCode(code: string, emailTo: string) {
+export async function sendAuthCodeByEmail(code: string, emailTo: string) {
   const info = await transport.sendMail({
     from: 'Clinic node api',
     to: emailTo,

@@ -7,7 +7,7 @@ import { getToken } from '../util/jwt'
 import { userService } from './user-service'
 import { generateCode } from '../util/generate-code'
 import { authcodeService } from './authcode-service'
-import { sendAuthCode } from '../util/email-sender'
+import { sendAuthCodeByEmail } from '../util/email-sender'
 import { AuthcodeEntity } from '../database/entity/authcode-entity'
 import { sendAuthCodeBySMS } from '../util/sms-sender'
 
@@ -81,7 +81,7 @@ class AuthService {
       await authcodeService.create(user, generatedCode)
 
       // send code
-      await sendAuthCode(generatedCode, email)
+      await sendAuthCodeByEmail(generatedCode, email)
 
       return { message: 'code sended' }
     }
