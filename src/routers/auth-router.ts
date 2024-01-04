@@ -6,6 +6,7 @@ import { PasswordMatchMIddleware } from '../middlewares/password-match-middlewar
 import { LoginExistMiddleware } from '../middlewares/login-exist-middleware'
 import { SignupMiddleware } from '../middlewares/signup-middleware'
 import { EmailMatchMiddleware } from '../middlewares/email-match-middleware'
+import { FormatPhoneNumberMiddleware } from '../middlewares/phone-number-format-middleware'
 
 export const authRouter = express.Router()
 
@@ -65,14 +66,18 @@ authRouter.post(
 )
 
 // sign by phone number
-authRouter.post('/signbyphone', async (req, res, next) => {
-  try {
-    const { phoneNumber, code } = req.body
+authRouter.post(
+  '/signbyphone',
+  FormatPhoneNumberMiddleware,
+  async (req, res, next) => {
+    try {
+      const { phoneNumber, code } = req.body
 
-    const result = await authService.signByPhoneNumber(phoneNumber, code)
+      const result = await authService.signByPhoneNumber(phoneNumber, code)
 
-    res.status(StatusCode.SuccessOK).json(result)
-  } catch (error) {
-    next(error)
+      res.status(StatusCode.SuccessOK).json(result)
+    } catch (error) {
+      next(error)
+    }
   }
-})
+)
