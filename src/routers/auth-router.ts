@@ -5,6 +5,7 @@ import StatusCode from 'status-code-enum'
 import { PasswordMatchMIddleware } from '../middlewares/password-match-middleware'
 import { LoginExistMiddleware } from '../middlewares/login-exist-middleware'
 import { SignupMiddleware } from '../middlewares/signup-middleware'
+import { EmailMatchMiddleware } from '../middlewares/email-match-middleware'
 
 export const authRouter = express.Router()
 
@@ -47,14 +48,18 @@ authRouter.post(
 )
 
 // sign by email
-authRouter.post('/signbyemail', async (req, res, next) => {
-  try {
-    const { email, code } = req.body
+authRouter.post(
+  '/signbyemail',
+  EmailMatchMiddleware,
+  async (req, res, next) => {
+    try {
+      const { email, code } = req.body
 
-    const result = await authService.signByEmail(email, code)
+      const result = await authService.signByEmail(email, code)
 
-    res.status(StatusCode.SuccessOK).json(result)
-  } catch (error) {
-    next(error)
+      res.status(StatusCode.SuccessOK).json(result)
+    } catch (error) {
+      next(error)
+    }
   }
-})
+)
