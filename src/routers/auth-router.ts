@@ -52,15 +52,9 @@ authRouter.post('/sign', SignMiddleware, async (req, res, next) => {
   try {
     const { email, phoneNumber, code } = req.body
 
-    if (email) {
-      const result = await authService.signByEmail(email, code)
-      res.status(StatusCode.SuccessOK).json(result)
-    }
+    const result = await authService.sign(email, phoneNumber, code)
 
-    if (phoneNumber) {
-      const result = await authService.signByPhoneNumber(phoneNumber, code)
-      res.status(StatusCode.SuccessOK).json(result)
-    }
+    res.status(StatusCode.SuccessOK).json(result)
   } catch (error) {
     next(error)
   }

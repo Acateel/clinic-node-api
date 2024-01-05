@@ -63,8 +63,16 @@ class AuthService {
     return getToken(user)
   }
 
-  async signByEmail(email: string, code: string) {
-    const user = await userService.getByEmail(email)
+  async sign(email: string, phoneNumber: string, code: string) {
+    let user
+
+    if (email) {
+      user = await userService.getByEmail(email)
+    }
+
+    if (phoneNumber) {
+      user = await userService.getByPhoneNumber(phoneNumber)
+    }
 
     if (!user) {
       // after will add registration
@@ -81,35 +89,13 @@ class AuthService {
       await authcodeService.create(user, generatedCode)
 
       // send code
-      await sendAuthCodeByEmail(generatedCode, email)
+      if (email) {
+        await sendAuthCodeByEmail(generatedCode, email)
+      }
 
-      return { message: 'code sended' }
-    }
-
-    const token = await this.getUserTokenByCode(user, code)
-
-    return token
-  }
-
-  async signByPhoneNumber(phoneNumber: string, code: string) {
-    const user = await userService.getByPhoneNumber(phoneNumber)
-
-    if (!user) {
-      // after will add registration
-      throw createHttpError(
-        StatusCode.ClientErrorNotFound,
-        'Credentials incorrect, user not found'
-      )
-    }
-
-    if (!code) {
-      const generatedCode = generateCode()
-
-      // save code
-      await authcodeService.create(user, generatedCode)
-
-      // send code
-      await sendAuthCodeBySMS(phoneNumber, generatedCode)
+      if (phoneNumber) {
+        await sendAuthCodeBySMS(phoneNumber, generatedCode)
+      }
 
       return { message: 'code sended' }
     }
