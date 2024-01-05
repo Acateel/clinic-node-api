@@ -5,8 +5,7 @@ import StatusCode from 'status-code-enum'
 import { PasswordMatchMIddleware } from '../middlewares/password-match-middleware'
 import { LoginExistMiddleware } from '../middlewares/login-exist-middleware'
 import { SignupMiddleware } from '../middlewares/signup-middleware'
-import { EmailMatchMiddleware } from '../middlewares/email-match-middleware'
-import { FormatPhoneNumberMiddleware } from '../middlewares/phone-number-format-middleware'
+import { SignMiddleware } from '../middlewares/sign-middleware'
 
 export const authRouter = express.Router()
 
@@ -48,36 +47,21 @@ authRouter.post(
   }
 )
 
-// sign by email
-authRouter.post(
-  '/signbyemail',
-  EmailMatchMiddleware,
-  async (req, res, next) => {
-    try {
-      const { email, code } = req.body
+// sign without password
+authRouter.post('/sign', SignMiddleware, async (req, res, next) => {
+  try {
+    const { email, phoneNumber, code } = req.body
 
+    if (email) {
       const result = await authService.signByEmail(email, code)
-
       res.status(StatusCode.SuccessOK).json(result)
-    } catch (error) {
-      next(error)
     }
-  }
-)
 
-// sign by phone number
-authRouter.post(
-  '/signbyphone',
-  FormatPhoneNumberMiddleware,
-  async (req, res, next) => {
-    try {
-      const { phoneNumber, code } = req.body
-
+    if (phoneNumber) {
       const result = await authService.signByPhoneNumber(phoneNumber, code)
-
       res.status(StatusCode.SuccessOK).json(result)
-    } catch (error) {
-      next(error)
     }
+  } catch (error) {
+    next(error)
   }
-)
+})
