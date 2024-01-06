@@ -50,9 +50,9 @@ authRouter.post(
 // sign without password
 authRouter.post('/sign', SignMiddleware, async (req, res, next) => {
   try {
-    const { email, phoneNumber, code } = req.body
+    const { email, phoneNumber, code, role } = req.body
 
-    const result = await authService.sign(email, phoneNumber, code)
+    const result = await authService.sign(email, phoneNumber, code, role)
 
     res.status(StatusCode.SuccessOK).json(result)
   } catch (error) {

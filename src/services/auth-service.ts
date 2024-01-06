@@ -10,6 +10,7 @@ import { authcodeService } from './authcode-service'
 import { sendAuthCodeByEmail } from '../util/email-sender'
 import { AuthcodeEntity } from '../database/entity/authcode-entity'
 import { sendAuthCodeBySMS } from '../util/sms-sender'
+import { generatePassword } from '../util/password-generator'
 
 class AuthService {
   async signup(
@@ -63,7 +64,7 @@ class AuthService {
     return getToken(user)
   }
 
-  async sign(email: string, phoneNumber: string, code: string) {
+  async sign(email: string, phoneNumber: string, code: string, role: UserRole) {
     let user
 
     if (email) {
@@ -75,11 +76,7 @@ class AuthService {
     }
 
     if (!user) {
-      // after will add registration
-      throw createHttpError(
-        StatusCode.ClientErrorNotFound,
-        'Credentials incorrect, user not found'
-      )
+      user = await this.signup(email, phoneNumber, generatePassword(), role)
     }
 
     if (!code) {

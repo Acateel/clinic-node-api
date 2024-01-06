@@ -3,9 +3,10 @@ import { matchEmail } from '../util/format-email'
 import createHttpError from 'http-errors'
 import StatusCode from 'status-code-enum'
 import { formatPhoneNumber } from '../util/format-phone-number'
+import { UserRole } from '../database/entity/user-entity'
 
 export const SignMiddleware: RequestHandler = (req, res, next) => {
-  const { email, phoneNumber } = req.body
+  const { email, phoneNumber, role } = req.body
 
   if (!email && !phoneNumber) {
     next(
@@ -47,6 +48,12 @@ export const SignMiddleware: RequestHandler = (req, res, next) => {
       )
     }
     req.body.phoneNumber = formatedPhoneNumber
+  }
+
+  if (role && !Object.values(UserRole).includes(role)) {
+    next(
+      createHttpError(StatusCode.ClientErrorForbidden, 'Dont have this role')
+    )
   }
 
   next()
