@@ -1,4 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+} from 'typeorm'
+import { AuthcodeEntity } from './authcode-entity'
 
 export enum UserRole {
   Doctor = 'doctor',
@@ -33,4 +41,15 @@ export class UserEntity {
     default: UserRole.Patient,
   })
   role: UserRole
+
+  @OneToMany(() => AuthcodeEntity, (authcode) => authcode.user, {
+    cascade: ['remove'],
+  })
+  Authcodes: AuthcodeEntity[]
+
+  @CreateDateColumn({ type: 'timestamptz' })
+  createdAt: Date
+
+  @UpdateDateColumn({ type: 'timestamptz' })
+  updatedAt: Date
 }

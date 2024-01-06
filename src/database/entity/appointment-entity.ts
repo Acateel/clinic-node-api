@@ -14,10 +14,10 @@ export class AppointmentEntity {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column()
+  @Column({ type: 'timestamptz' })
   startTime: Date
 
-  @Column()
+  @Column({ type: 'timestamptz' })
   endTime: Date
 
   @ManyToOne(() => PatientEntity, (patient) => patient.appointments, {
@@ -30,9 +30,9 @@ export class AppointmentEntity {
   })
   doctor: DoctorEntity
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date
 }

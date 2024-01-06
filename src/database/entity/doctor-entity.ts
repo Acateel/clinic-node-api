@@ -39,9 +39,9 @@ export class DoctorEntity {
   )
   schedule: DoctorScheduleEntity[]
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date
 }

@@ -1,28 +1,25 @@
 import {
   Entity,
-  Column,
-  ManyToOne,
   PrimaryGeneratedColumn,
+  Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
 } from 'typeorm'
-import { DoctorEntity } from './doctor-entity'
+import { UserEntity } from './user-entity'
 
 @Entity()
-export class DoctorScheduleEntity {
+export class AuthcodeEntity {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column({ type: 'timestamptz' })
-  startTime: Date
+  @Column()
+  code: string
 
-  @Column({ type: 'timestamptz' })
-  endTime: Date
-
-  @ManyToOne(() => DoctorEntity, (doctor) => doctor.appointments, {
+  @ManyToOne(() => UserEntity, (user) => user.Authcodes, {
     onDelete: 'CASCADE',
   })
-  doctor: DoctorEntity
+  user: UserEntity
 
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date

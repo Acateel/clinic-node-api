@@ -5,6 +5,7 @@ import StatusCode from 'status-code-enum'
 import { PasswordMatchMIddleware } from '../middlewares/password-match-middleware'
 import { LoginExistMiddleware } from '../middlewares/login-exist-middleware'
 import { SignupMiddleware } from '../middlewares/signup-middleware'
+import { SignMiddleware } from '../middlewares/sign-middleware'
 
 export const authRouter = express.Router()
 
@@ -45,3 +46,16 @@ authRouter.post(
     }
   }
 )
+
+// sign without password
+authRouter.post('/sign', SignMiddleware, async (req, res, next) => {
+  try {
+    const { email, phoneNumber, code, role } = req.body
+
+    const result = await authService.sign(email, phoneNumber, code, role)
+
+    res.status(StatusCode.SuccessOK).json(result)
+  } catch (error) {
+    next(error)
+  }
+})
