@@ -48,7 +48,7 @@ authRouter.post(
 )
 
 // sign without password
-authRouter.post('/sign', SignMiddleware, async (req, res, next) => {
+authRouter.post('/login', SignMiddleware, async (req, res, next) => {
   try {
     const { email, phoneNumber, code, role } = req.body
 

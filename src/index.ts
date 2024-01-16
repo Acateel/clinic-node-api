@@ -20,7 +20,7 @@ app.use('/doctors', doctorRouter)
 app.use('/doctors/:doctorId/schedules', doctorScheduleRouter)
 app.use('/patients', patientRouter)
 app.use('/appointments', appointmentRouter)
-app.use('', authRouter)
+app.use('/auth', authRouter)
 app.use('/users', userRouter)
 
 app.use(errorHandler)
