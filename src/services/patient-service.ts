@@ -1,6 +1,8 @@
 import { dataSourse } from '../database/data-sourse'
 import { PatientEntity } from '../database/entity/patient-entity'
+import { CreatePatientDto } from '../dto/create-patient-dto'
 import { formatPhoneNumber } from '../util/format-phone-number'
+import { validateDto } from '../util/validate-decorators'
 
 class PatientService {
   async get(filter: any) {
@@ -19,13 +21,14 @@ class PatientService {
     return patient
   }
 
-  async create(firstName: string, lastName: string, phoneNumber: string) {
+  @validateDto
+  async create(patientDto: CreatePatientDto) {
     const patientRepo = dataSourse.getRepository(PatientEntity)
 
     const patient = new PatientEntity()
-    patient.firstName = firstName
-    patient.lastName = lastName
-    patient.phoneNumber = phoneNumber
+    patient.firstName = patientDto.firstName
+    patient.lastName = patientDto.lastName
+    patient.phoneNumber = patientDto.phoneNumber
 
     const result = await patientRepo.save(patient)
 
