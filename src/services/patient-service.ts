@@ -29,7 +29,7 @@ class PatientService {
     const patient = new PatientEntity()
     patient.firstName = patientDto.firstName
     patient.lastName = patientDto.lastName
-    patient.phoneNumber = patientDto.phoneNumber
+    patient.phoneNumber = formatPhoneNumber(patientDto.phoneNumber)
 
     const result = await patientRepo.save(patient)
 
@@ -43,7 +43,7 @@ class PatientService {
     const patient = await patientRepo.findOneBy({ id: patientDto.id })
     patient.firstName = patientDto.firstName
     patient.lastName = patientDto.lastName
-    patient.phoneNumber = patientDto.phoneNumber
+    patient.phoneNumber = formatPhoneNumber(patientDto.phoneNumber)
 
     const result = await patientRepo.save(patient)
 
