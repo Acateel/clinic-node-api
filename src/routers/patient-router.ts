@@ -2,7 +2,8 @@ import express from 'express'
 import { patientService } from '../services/patient-service'
 import { FormatPhoneNumberMiddleware } from '../middlewares/phone-number-format-middleware'
 import StatusCode from 'status-code-enum'
-import { CreatePatientDto } from '../dto/create-patient-dto'
+import { CreatePatientDto } from '../dto/patient/create-patient-dto'
+import { UpdatePatientDto } from '../dto/patient/update-patient-dto'
 
 export const patientRouter = express.Router()
 
@@ -48,12 +49,13 @@ patientRouter.patch(
   FormatPhoneNumberMiddleware,
   async (req, res, next) => {
     try {
-      const { firstName, lastName, phoneNumber } = req.body
       const patient = await patientService.update(
-        +req.params.id,
-        firstName,
-        lastName,
-        phoneNumber
+        new UpdatePatientDto(
+          +req.params.id,
+          req.body.firstName,
+          req.body.lastName,
+          req.body.phoneNumber
+        )
       )
       res.status(StatusCode.SuccessOK).json(patient)
     } catch (error) {
