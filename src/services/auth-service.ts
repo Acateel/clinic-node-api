@@ -14,6 +14,7 @@ import { generatePassword } from '../util/password-generator'
 import { validDto, validateDto } from '../util/validate-decorators'
 import { CreateUserDto } from '../dto/user/create-user-dto'
 import { SigninUserDto } from '../dto/user/signin-user-dto'
+import { LoginUserDto } from '../dto/user/login-user-dto'
 
 class AuthService {
   @validateDto
@@ -64,7 +65,24 @@ class AuthService {
     return getToken(user)
   }
 
-  async sign(email: string, phoneNumber: string, code: string, role: UserRole) {
+  @validateDto
+  async login(@validDto userDto: LoginUserDto) {
+    const { email, phoneNumber, code, role } = userDto
+
+    if (!email && !phoneNumber) {
+      throw createHttpError(
+        StatusCode.ClientErrorBadRequest,
+        'Dont have email or phone number'
+      )
+    }
+
+    if (email && phoneNumber) {
+      throw createHttpError(
+        StatusCode.ClientErrorBadRequest,
+        'Need select email or phone number'
+      )
+    }
+
     let user
 
     if (email) {
