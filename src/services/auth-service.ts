@@ -1,8 +1,8 @@
 import createHttpError from 'http-errors'
-import { dataSourse } from '../database/data-sourse'
-import { UserEntity, UserRole } from '../database/entity/user-entity'
 import * as argon from 'argon2'
 import StatusCode from 'status-code-enum'
+import { dataSourse } from '../database/data-sourse'
+import { UserEntity } from '../database/entity/user-entity'
 import { getToken } from '../util/jwt'
 import { userService } from './user-service'
 import { generateCode } from '../util/generate-code'
@@ -15,6 +15,7 @@ import { validDto, validateDto } from '../util/validate-decorators'
 import { CreateUserDto } from '../dto/user/create-user-dto'
 import { SigninUserDto } from '../dto/user/signin-user-dto'
 import { LoginUserDto } from '../dto/user/login-user-dto'
+import { formatPhoneNumber } from '../util/format-phone-number'
 
 class AuthService {
   @validateDto
@@ -32,7 +33,7 @@ class AuthService {
 
     const user = new UserEntity()
     user.email = userDto.email
-    user.phoneNumber = userDto.phoneNumber
+    user.phoneNumber = formatPhoneNumber(userDto.phoneNumber)
     user.password = await argon.hash(userDto.password)
     user.role = userDto.role
 
