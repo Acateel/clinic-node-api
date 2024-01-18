@@ -5,6 +5,9 @@ import { appointmentService } from './appointment-service'
 import createHttpError from 'http-errors'
 import { doctorService } from './doctor-service'
 import StatusCode from 'status-code-enum'
+import { validDto, validateDto } from '../util/validate-decorators'
+import { CreateDoctorScheduleDto } from '../dto/doctor-schedule/create-doctor-schedule-dto'
+import { UpdateDoctorScheduleDto } from '../dto/doctor-schedule/update-doctor-schedule-dto'
 
 class DoctorScheduleService {
   async get() {
@@ -25,10 +28,13 @@ class DoctorScheduleService {
     return schedule
   }
 
-  async create(doctorId: number, startTime: Date, endTime: Date) {
+  @validateDto
+  async create(@validDto doctorScheduleDto: CreateDoctorScheduleDto) {
+    this.throwIfBadDate(doctorScheduleDto.startTime, doctorScheduleDto.endTime)
+
     const scheduleRepo = dataSourse.getRepository(DoctorScheduleEntity)
 
-    const doctor = await doctorService.getById(doctorId)
+    const doctor = await doctorService.getById(doctorScheduleDto.doctorId)
     if (!doctor) {
       throw createHttpError(
         StatusCode.ClientErrorNotFound,
@@ -38,17 +44,20 @@ class DoctorScheduleService {
 
     const schedule = new DoctorScheduleEntity()
     schedule.doctor = doctor
-    schedule.startTime = startTime
-    schedule.endTime = endTime
+    schedule.startTime = doctorScheduleDto.startTime
+    schedule.endTime = doctorScheduleDto.endTime
 
     const result = await scheduleRepo.save(schedule)
     return result
   }
 
-  async update(id: number, doctorId: number, startTime: Date, endTime: Date) {
+  @validateDto
+  async update(@validDto doctorScheduleDto: UpdateDoctorScheduleDto) {
+    this.throwIfBadDate(doctorScheduleDto.startTime, doctorScheduleDto.endTime)
+
     const scheduleRepo = dataSourse.getRepository(DoctorScheduleEntity)
 
-    const doctor = await doctorService.getById(doctorId)
+    const doctor = await doctorService.getById(doctorScheduleDto.doctorId)
     if (!doctor) {
       throw createHttpError(
         StatusCode.ClientErrorNotFound,
@@ -58,7 +67,7 @@ class DoctorScheduleService {
 
     const schedule = await scheduleRepo.findOne({
       where: {
-        id,
+        id: doctorScheduleDto.id,
       },
       relations: {
         doctor: true,
@@ -67,8 +76,8 @@ class DoctorScheduleService {
 
     const isNewScheduleCorrect = await this.isNewScheduleIncludeAppointments(
       schedule,
-      startTime,
-      endTime
+      doctorScheduleDto.startTime,
+      doctorScheduleDto.endTime
     )
 
     if (!isNewScheduleCorrect) {
@@ -79,8 +88,8 @@ class DoctorScheduleService {
     }
 
     schedule.doctor = doctor
-    schedule.startTime = startTime
-    schedule.endTime = endTime
+    schedule.startTime = doctorScheduleDto.startTime
+    schedule.endTime = doctorScheduleDto.endTime
 
     const result = await scheduleRepo.save(schedule)
     return result
@@ -125,6 +134,22 @@ class DoctorScheduleService {
     )
 
     return newScheduleIncludeAppointments
+  }
+
+  throwIfBadDate(startTime: Date, endTime: Date) {
+    if (startTime > endTime) {
+      throw createHttpError(
+        StatusCode.ClientErrorBadRequest,
+        'Start time cannot be after end time'
+      )
+    }
+
+    if (startTime.toISOString() === endTime.toISOString()) {
+      throw createHttpError(
+        StatusCode.ClientErrorBadRequest,
+        'Start and end times connot be one the same'
+      )
+    }
   }
 }
 

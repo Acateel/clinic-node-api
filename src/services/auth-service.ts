@@ -11,40 +11,41 @@ import { sendAuthCodeByEmail } from '../util/email-sender'
 import { AuthcodeEntity } from '../database/entity/authcode-entity'
 import { sendAuthCodeBySMS } from '../util/sms-sender'
 import { generatePassword } from '../util/password-generator'
+import { validDto, validateDto } from '../util/validate-decorators'
+import { CreateUserDto } from '../dto/user/create-user-dto'
+import { SigninUserDto } from '../dto/user/signin-user-dto'
+import { LoginUserDto } from '../dto/user/login-user-dto'
 
 class AuthService {
-  async signup(
-    email: string,
-    phoneNumber: string,
-    password: string,
-    role: UserRole
-  ) {
-    if (!email && !phoneNumber) {
+  @validateDto
+  async signup(@validDto userDto: CreateUserDto) {
+    if (!userDto.email && !userDto.phoneNumber) {
       throw createHttpError(
         StatusCode.ClientErrorNotFound,
         'Credentials incorrect, need email or phone number for signup'
       )
     }
 
-    await this.checkUserExist(email, phoneNumber)
+    await this.checkUserExist(userDto.email, userDto.phoneNumber)
 
     const userRepo = dataSourse.getRepository(UserEntity)
 
     const user = new UserEntity()
-    user.email = email
-    user.phoneNumber = phoneNumber
-    user.password = await argon.hash(password)
-    user.role = role
+    user.email = userDto.email
+    user.phoneNumber = userDto.phoneNumber
+    user.password = await argon.hash(userDto.password)
+    user.role = userDto.role
 
     const result = await userRepo.save(user)
 
     return result
   }
 
-  async signin(login: string, password: string) {
+  @validateDto
+  async signin(@validDto userDto: SigninUserDto) {
     const user =
-      (await userService.getByEmail(login)) ??
-      (await userService.getByPhoneNumber(login))
+      (await userService.getByEmail(userDto.login)) ??
+      (await userService.getByPhoneNumber(userDto.login))
 
     if (!user) {
       throw createHttpError(
@@ -53,7 +54,7 @@ class AuthService {
       )
     }
 
-    const pwMatches = await argon.verify(user.password, password)
+    const pwMatches = await argon.verify(user.password, userDto.password)
     if (!pwMatches) {
       throw createHttpError(
         StatusCode.ClientErrorForbidden,
@@ -64,7 +65,24 @@ class AuthService {
     return getToken(user)
   }
 
-  async sign(email: string, phoneNumber: string, code: string, role: UserRole) {
+  @validateDto
+  async login(@validDto userDto: LoginUserDto) {
+    const { email, phoneNumber, code, role } = userDto
+
+    if (!email && !phoneNumber) {
+      throw createHttpError(
+        StatusCode.ClientErrorBadRequest,
+        'Dont have email or phone number'
+      )
+    }
+
+    if (email && phoneNumber) {
+      throw createHttpError(
+        StatusCode.ClientErrorBadRequest,
+        'Need select email or phone number'
+      )
+    }
+
     let user
 
     if (email) {
@@ -76,7 +94,9 @@ class AuthService {
     }
 
     if (!user) {
-      user = await this.signup(email, phoneNumber, generatePassword(), role)
+      user = await this.signup(
+        new CreateUserDto(email, phoneNumber, generatePassword(), role)
+      )
     }
 
     if (!code) {
