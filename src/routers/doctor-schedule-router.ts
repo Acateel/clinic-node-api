@@ -1,7 +1,8 @@
 import express from 'express'
-import { doctorScheduleService } from '../services/doctor-schedule-service'
-import { TimesParsingMiddleware } from '../middlewares/times-parsing-middleware'
 import StatusCode from 'status-code-enum'
+import { doctorScheduleService } from '../services/doctor-schedule-service'
+import { CreateDoctorScheduleDto } from '../dto/doctor-schedule/create-doctor-schedule-dto'
+import { UpdateDoctorScheduleDto } from '../dto/doctor-schedule/update-doctor-schedule-dto'
 
 export const doctorScheduleRouter = express.Router({ mergeParams: true })
 
@@ -27,45 +28,41 @@ doctorScheduleRouter.get('/:id', async (req, res, next) => {
 })
 
 // Create
-doctorScheduleRouter.post(
-  '/',
-  TimesParsingMiddleware,
-  async (req, res, next) => {
-    try {
-      const { doctorId } = req.params as any
-      const { startTime, endTime } = req.body
-      const schedule = await doctorScheduleService.create(
+doctorScheduleRouter.post('/', async (req, res, next) => {
+  try {
+    const { doctorId } = req.params as any
+    const { startTime, endTime } = req.body
+    const schedule = await doctorScheduleService.create(
+      new CreateDoctorScheduleDto(
         +doctorId,
-        startTime,
-        endTime
+        new Date(startTime),
+        new Date(endTime)
       )
-      res.status(StatusCode.SuccessCreated).json(schedule)
-    } catch (error) {
-      next(error)
-    }
+    )
+    res.status(StatusCode.SuccessCreated).json(schedule)
+  } catch (error) {
+    next(error)
   }
-)
+})
 
 // Update
-doctorScheduleRouter.patch(
-  '/:id',
-  TimesParsingMiddleware,
-  async (req, res, next) => {
-    try {
-      const { doctorId } = req.params as any
-      const { startTime, endTime } = req.body
-      const schedule = await doctorScheduleService.update(
+doctorScheduleRouter.patch('/:id', async (req, res, next) => {
+  try {
+    const { doctorId } = req.params as any
+    const { startTime, endTime } = req.body
+    const schedule = await doctorScheduleService.update(
+      new UpdateDoctorScheduleDto(
         +req.params.id,
-        doctorId,
-        startTime,
-        endTime
+        +doctorId,
+        new Date(startTime),
+        new Date(endTime)
       )
-      res.status(StatusCode.SuccessOK).json(schedule)
-    } catch (error) {
-      next(error)
-    }
+    )
+    res.status(StatusCode.SuccessOK).json(schedule)
+  } catch (error) {
+    next(error)
   }
-)
+})
 
 // Delete
 doctorScheduleRouter.delete('/:id', async (req, res, next) => {
