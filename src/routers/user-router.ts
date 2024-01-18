@@ -1,6 +1,5 @@
 import express from 'express'
 import { userService } from '../services/user-service'
-import { FormatPhoneNumberMiddleware } from '../middlewares/phone-number-format-middleware'
 import StatusCode from 'status-code-enum'
 
 export const userRouter = express.Router()

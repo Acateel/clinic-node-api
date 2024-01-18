@@ -1,6 +1,5 @@
 import express from 'express'
 import { patientService } from '../services/patient-service'
-import { FormatPhoneNumberMiddleware } from '../middlewares/phone-number-format-middleware'
 import StatusCode from 'status-code-enum'
 import { CreatePatientDto } from '../dto/patient/create-patient-dto'
 import { UpdatePatientDto } from '../dto/patient/update-patient-dto'
