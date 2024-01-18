@@ -6,6 +6,9 @@ import { doctorScheduleService } from './doctor-schedule-service'
 import { patientService } from './patient-service'
 import { doctorService } from './doctor-service'
 import StatusCode from 'status-code-enum'
+import { validateDto, validDto } from '../util/validate-decorators'
+import { CreateAppointmentDto } from '../dto/appointment/create-appointment-dto'
+import { UpdateAppointmentDto } from '../dto/appointment/update-appointment-dto'
 
 class AppointmentService {
   async get() {
@@ -61,15 +64,13 @@ class AppointmentService {
     return appointmentsBySchedule
   }
 
-  async create(
-    patientId: number,
-    doctorId: number,
-    startTime: Date,
-    endTime: Date
-  ) {
+  @validateDto
+  async create(@validDto appointmentDto: CreateAppointmentDto) {
+    this.throwIfBadDate(appointmentDto.startTime, appointmentDto.endTime)
+
     const appointmentRepo = dataSourse.getRepository(AppointmentEntity)
 
-    const patient = await patientService.getById(patientId)
+    const patient = await patientService.getById(appointmentDto.patientId)
     if (!patient) {
       throw createHttpError(
         StatusCode.ClientErrorNotFound,
@@ -77,7 +78,7 @@ class AppointmentService {
       )
     }
 
-    const doctor = await doctorService.getById(doctorId)
+    const doctor = await doctorService.getById(appointmentDto.doctorId)
     if (!doctor) {
       throw createHttpError(
         StatusCode.ClientErrorNotFound,
@@ -87,9 +88,9 @@ class AppointmentService {
 
     const isTimesInDoctorSchedules =
       await doctorScheduleService.isTimesInSchedule(
-        doctorId,
-        startTime,
-        endTime
+        appointmentDto.doctorId,
+        appointmentDto.startTime,
+        appointmentDto.endTime
       )
 
     if (!isTimesInDoctorSchedules) {
@@ -100,9 +101,9 @@ class AppointmentService {
     }
 
     const canAddNewAppointment = await this.checkForCreate(
-      doctorId,
-      startTime,
-      endTime
+      appointmentDto.doctorId,
+      appointmentDto.startTime,
+      appointmentDto.endTime
     )
 
     if (!canAddNewAppointment) {
@@ -115,25 +116,25 @@ class AppointmentService {
     const appointment = new AppointmentEntity()
     appointment.patient = patient
     appointment.doctor = doctor
-    appointment.startTime = startTime
-    appointment.endTime = endTime
+    appointment.startTime = appointmentDto.startTime
+    appointment.endTime = appointmentDto.endTime
 
     const result = await appointmentRepo.save(appointment)
 
     return result
   }
 
-  async update(
-    appointmentId: number,
-    doctorId: number,
-    startTime: Date,
-    endTime: Date
-  ) {
+  @validateDto
+  async update(@validDto appointmentDto: UpdateAppointmentDto) {
+    this.throwIfBadDate(appointmentDto.startTime, appointmentDto.endTime)
+
     const appointmentRepo = dataSourse.getRepository(AppointmentEntity)
 
-    const appointment = await appointmentRepo.findOneBy({ id: appointmentId })
+    const appointment = await appointmentRepo.findOneBy({
+      id: appointmentDto.appointmentId,
+    })
 
-    const doctor = await doctorService.getById(doctorId)
+    const doctor = await doctorService.getById(appointmentDto.doctorId)
     if (!doctor) {
       throw createHttpError(
         StatusCode.ClientErrorNotFound,
@@ -143,9 +144,9 @@ class AppointmentService {
 
     const isTimesInDoctorSchedules =
       await doctorScheduleService.isTimesInSchedule(
-        doctorId,
-        startTime,
-        endTime
+        appointmentDto.doctorId,
+        appointmentDto.startTime,
+        appointmentDto.endTime
       )
 
     if (!isTimesInDoctorSchedules) {
@@ -157,9 +158,9 @@ class AppointmentService {
 
     const canUpdateAppointment = await this.checkForUpdate(
       appointment.id,
-      doctorId,
-      startTime,
-      endTime
+      appointmentDto.doctorId,
+      appointmentDto.startTime,
+      appointmentDto.endTime
     )
 
     if (!canUpdateAppointment) {
@@ -170,8 +171,8 @@ class AppointmentService {
     }
 
     appointment.doctor = doctor
-    appointment.startTime = startTime
-    appointment.endTime = endTime
+    appointment.startTime = appointmentDto.startTime
+    appointment.endTime = appointmentDto.endTime
 
     const result = await appointmentRepo.save(appointment)
     return result
@@ -240,6 +241,38 @@ class AppointmentService {
     }
 
     return false
+  }
+
+  throwIfBadDate(startTime: Date, endTime: Date) {
+    const now = new Date()
+
+    if (startTime < now) {
+      throw createHttpError(
+        StatusCode.ClientErrorBadRequest,
+        'Start time cannot be in past'
+      )
+    }
+
+    if (startTime > endTime) {
+      throw createHttpError(
+        StatusCode.ClientErrorBadRequest,
+        'Start time cannot be after end time'
+      )
+    }
+
+    if (startTime.toISOString() === endTime.toISOString()) {
+      throw createHttpError(
+        StatusCode.ClientErrorBadRequest,
+        'Start and end times connot be one the same'
+      )
+    }
+
+    if (startTime.toDateString() !== endTime.toDateString()) {
+      throw createHttpError(
+        StatusCode.ClientErrorBadRequest,
+        'Start and end times connot be in different days'
+      )
+    }
   }
 }
 
