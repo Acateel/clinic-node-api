@@ -5,6 +5,7 @@ import { PasswordMatchMIddleware } from '../middlewares/password-match-middlewar
 import { LoginExistMiddleware } from '../middlewares/login-exist-middleware'
 import { SignMiddleware } from '../middlewares/sign-middleware'
 import { CreateUserDto } from '../dto/user/create-user-dto'
+import { SigninUserDto } from '../dto/user/signin-user-dto'
 
 export const authRouter = express.Router()
 
@@ -17,7 +18,9 @@ authRouter.post('/signup', async (req, res, next) => {
       new CreateUserDto(email, phoneNumber, password, role)
     )
 
-    const token = await authService.signin(email ?? phoneNumber, password)
+    const token = await authService.signin(
+      new SigninUserDto(email ?? phoneNumber, password)
+    )
 
     res.status(StatusCode.SuccessOK).json(token)
   } catch (error) {
@@ -26,22 +29,17 @@ authRouter.post('/signup', async (req, res, next) => {
 })
 
 // sign in
-authRouter.post(
-  '/signin',
-  LoginExistMiddleware,
-  PasswordMatchMIddleware,
-  async (req, res, next) => {
-    try {
-      const { login, password } = req.body
+authRouter.post('/signin', async (req, res, next) => {
+  try {
+    const { login, password } = req.body
 
-      const token = await authService.signin(login, password)
+    const token = await authService.signin(new SigninUserDto(login, password))
 
-      res.status(StatusCode.SuccessOK).json(token)
-    } catch (error) {
-      next(error)
-    }
+    res.status(StatusCode.SuccessOK).json(token)
+  } catch (error) {
+    next(error)
   }
-)
+})
 
 // sign without password
 authRouter.post('/login', SignMiddleware, async (req, res, next) => {

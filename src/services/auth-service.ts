@@ -13,6 +13,7 @@ import { sendAuthCodeBySMS } from '../util/sms-sender'
 import { generatePassword } from '../util/password-generator'
 import { validDto, validateDto } from '../util/validate-decorators'
 import { CreateUserDto } from '../dto/user/create-user-dto'
+import { SigninUserDto } from '../dto/user/signin-user-dto'
 
 class AuthService {
   @validateDto
@@ -39,10 +40,11 @@ class AuthService {
     return result
   }
 
-  async signin(login: string, password: string) {
+  @validateDto
+  async signin(@validDto userDto: SigninUserDto) {
     const user =
-      (await userService.getByEmail(login)) ??
-      (await userService.getByPhoneNumber(login))
+      (await userService.getByEmail(userDto.login)) ??
+      (await userService.getByPhoneNumber(userDto.login))
 
     if (!user) {
       throw createHttpError(
@@ -51,7 +53,7 @@ class AuthService {
       )
     }
 
-    const pwMatches = await argon.verify(user.password, password)
+    const pwMatches = await argon.verify(user.password, userDto.password)
     if (!pwMatches) {
       throw createHttpError(
         StatusCode.ClientErrorForbidden,
