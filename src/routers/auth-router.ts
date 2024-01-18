@@ -1,33 +1,29 @@
 import express from 'express'
-import { authService } from '../services/auth-service'
-import { UserRole } from '../database/entity/user-entity'
 import StatusCode from 'status-code-enum'
+import { authService } from '../services/auth-service'
 import { PasswordMatchMIddleware } from '../middlewares/password-match-middleware'
 import { LoginExistMiddleware } from '../middlewares/login-exist-middleware'
-import { SignupMiddleware } from '../middlewares/signup-middleware'
 import { SignMiddleware } from '../middlewares/sign-middleware'
+import { CreateUserDto } from '../dto/user/create-user-dto'
 
 export const authRouter = express.Router()
 
 // sign up
-authRouter.post(
-  '/signup',
-  SignupMiddleware,
-  PasswordMatchMIddleware,
-  async (req, res, next) => {
-    try {
-      const { email, phoneNumber, password, role } = req.body
+authRouter.post('/signup', async (req, res, next) => {
+  try {
+    const { email, phoneNumber, password, role } = req.body
 
-      await authService.signup(email, phoneNumber, password, role as UserRole)
+    await authService.signup(
+      new CreateUserDto(email, phoneNumber, password, role)
+    )
 
-      const token = await authService.signin(email ?? phoneNumber, password)
+    const token = await authService.signin(email ?? phoneNumber, password)
 
-      res.status(StatusCode.SuccessOK).json(token)
-    } catch (error) {
-      next(error)
-    }
+    res.status(StatusCode.SuccessOK).json(token)
+  } catch (error) {
+    next(error)
   }
-)
+})
 
 // sign in
 authRouter.post(

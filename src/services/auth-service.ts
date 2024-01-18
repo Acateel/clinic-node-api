@@ -11,30 +11,28 @@ import { sendAuthCodeByEmail } from '../util/email-sender'
 import { AuthcodeEntity } from '../database/entity/authcode-entity'
 import { sendAuthCodeBySMS } from '../util/sms-sender'
 import { generatePassword } from '../util/password-generator'
+import { validDto, validateDto } from '../util/validate-decorators'
+import { CreateUserDto } from '../dto/user/create-user-dto'
 
 class AuthService {
-  async signup(
-    email: string,
-    phoneNumber: string,
-    password: string,
-    role: UserRole
-  ) {
-    if (!email && !phoneNumber) {
+  @validateDto
+  async signup(@validDto userDto: CreateUserDto) {
+    if (!userDto.email && !userDto.phoneNumber) {
       throw createHttpError(
         StatusCode.ClientErrorNotFound,
         'Credentials incorrect, need email or phone number for signup'
       )
     }
 
-    await this.checkUserExist(email, phoneNumber)
+    await this.checkUserExist(userDto.email, userDto.phoneNumber)
 
     const userRepo = dataSourse.getRepository(UserEntity)
 
     const user = new UserEntity()
-    user.email = email
-    user.phoneNumber = phoneNumber
-    user.password = await argon.hash(password)
-    user.role = role
+    user.email = userDto.email
+    user.phoneNumber = userDto.phoneNumber
+    user.password = await argon.hash(userDto.password)
+    user.role = userDto.role
 
     const result = await userRepo.save(user)
 
@@ -76,7 +74,9 @@ class AuthService {
     }
 
     if (!user) {
-      user = await this.signup(email, phoneNumber, generatePassword(), role)
+      user = await this.signup(
+        new CreateUserDto(email, phoneNumber, generatePassword(), role)
+      )
     }
 
     if (!code) {
