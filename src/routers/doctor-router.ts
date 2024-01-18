@@ -1,6 +1,8 @@
 import express from 'express'
-import { doctorService } from '../services/doctor-service'
 import StatusCode from 'status-code-enum'
+import { doctorService } from '../services/doctor-service'
+import { CreateDoctorDto } from '../dto/doctor/create-doctor-dto'
+import { UpdateDoctorDto } from '../dto/doctor/update-doctor-dto'
 
 export const doctorRouter = express.Router()
 
@@ -27,8 +29,13 @@ doctorRouter.get('/:id', async (req, res, next) => {
 // Create
 doctorRouter.post('/', async (req, res, next) => {
   try {
-    const { firstName, lastName, specialty } = req.body
-    const doctor = await doctorService.create(firstName, lastName, specialty)
+    const doctor = await doctorService.create(
+      new CreateDoctorDto(
+        req.body.firstName,
+        req.body.lastName,
+        req.body.specialty
+      )
+    )
     res.status(StatusCode.SuccessCreated).json(doctor)
   } catch (error) {
     next(error)
@@ -38,12 +45,13 @@ doctorRouter.post('/', async (req, res, next) => {
 // Update
 doctorRouter.patch('/:id', async (req, res, next) => {
   try {
-    const { firstName, lastName, specialty } = req.body
     const doctor = await doctorService.update(
-      +req.params.id,
-      firstName,
-      lastName,
-      specialty
+      new UpdateDoctorDto(
+        +req.params.id,
+        req.body.firstName,
+        req.body.lastName,
+        req.body.specialty
+      )
     )
     res.status(StatusCode.SuccessOK).json(doctor)
   } catch (error) {
