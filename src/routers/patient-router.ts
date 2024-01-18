@@ -44,25 +44,21 @@ patientRouter.post('/', async (req, res, next) => {
 })
 
 // Update
-patientRouter.patch(
-  '/:id',
-  FormatPhoneNumberMiddleware,
-  async (req, res, next) => {
-    try {
-      const patient = await patientService.update(
-        new UpdatePatientDto(
-          +req.params.id,
-          req.body.firstName,
-          req.body.lastName,
-          req.body.phoneNumber
-        )
+patientRouter.patch('/:id', async (req, res, next) => {
+  try {
+    const patient = await patientService.update(
+      new UpdatePatientDto(
+        +req.params.id,
+        req.body.firstName,
+        req.body.lastName,
+        req.body.phoneNumber
       )
-      res.status(StatusCode.SuccessOK).json(patient)
-    } catch (error) {
-      next(error)
-    }
+    )
+    res.status(StatusCode.SuccessOK).json(patient)
+  } catch (error) {
+    next(error)
   }
-)
+})
 
 // Delete
 patientRouter.delete('/:id', async (req, res, next) => {
