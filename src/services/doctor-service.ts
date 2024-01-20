@@ -12,13 +12,9 @@ class DoctorService {
 
     const doctorsQuery = doctorRepo
       .createQueryBuilder('doctor')
-      .addSelect((subQuery) => {
-        return subQuery
-          .select('COUNT(appointment.id)', 'appointmentsCount')
-          .from(AppointmentEntity, 'appointment')
-          .where('appointment.doctor.id = doctor.id')
-      }, 'appointmentsCount')
-      .orderBy('"appointmentsCount"', 'DESC')
+      .leftJoin('doctor.appointments', 'appointment_entity')
+      .groupBy('doctor.id')
+      .orderBy('count(appointment_entity.id)', 'DESC')
 
     const doctors: any[] = await this.convertToFilteredQuery(
       doctorsQuery,
