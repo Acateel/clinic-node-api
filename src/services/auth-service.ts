@@ -108,11 +108,11 @@ class AuthService {
 
       // send code
       if (email) {
-        await sendAuthCodeByEmail(generatedCode, email)
+        sendAuthCodeByEmail(generatedCode, email)
       }
 
       if (phoneNumber) {
-        await sendAuthCodeBySMS(phoneNumber, generatedCode)
+        sendAuthCodeBySMS(phoneNumber, generatedCode)
       }
 
       return { message: 'code sended' }
