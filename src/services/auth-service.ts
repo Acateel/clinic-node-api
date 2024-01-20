@@ -63,7 +63,9 @@ class AuthService {
       )
     }
 
-    return getToken(user)
+    const token = await getToken(user)
+
+    return { accessToken: token }
   }
 
   @validateDto
@@ -120,7 +122,7 @@ class AuthService {
 
     const token = await this.getUserTokenByCode(user, code)
 
-    return token
+    return { accessToken: token }
   }
 
   /**
