@@ -1,7 +1,5 @@
 Backend api for clinic by express and typeorm
 
-[Deployed API server](https://clinic-api-g14h.onrender.com)
-
 ## Getting Started
 
 First, add env variables:
@@ -16,6 +14,7 @@ TYPEORM_PORT
 TYPEORM_LOGGING
 TYPEORM_DATABASE
 
+BCRYPT_SALT
 JWT_SECRET
 
 NODEMAILER_HOST
