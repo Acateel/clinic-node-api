@@ -1,6 +1,8 @@
 import createHttpError from 'http-errors'
-import * as argon from 'argon2'
+import { hash, compare } from 'bcrypt'
 import StatusCode from 'status-code-enum'
+import dotenv from 'dotenv'
+
 import { dataSourse } from '../database/data-sourse'
 import { UserEntity } from '../database/entity/user-entity'
 import { getToken } from '../util/jwt'
@@ -16,6 +18,9 @@ import { CreateUserDto } from '../dto/user/create-user-dto'
 import { SigninUserDto } from '../dto/user/signin-user-dto'
 import { LoginUserDto } from '../dto/user/login-user-dto'
 import { formatPhoneNumber } from '../util/format-phone-number'
+
+dotenv.config()
+const bcryptSalt: string = process.env.BCRYPT_SALT
 
 class AuthService {
   @validateDto
@@ -34,7 +39,7 @@ class AuthService {
     const user = new UserEntity()
     user.email = userDto.email
     user.phoneNumber = formatPhoneNumber(userDto.phoneNumber)
-    user.password = await argon.hash(userDto.password)
+    user.password = await hash(userDto.password, bcryptSalt)
     user.role = userDto.role
 
     const result = await userRepo.save(user)
@@ -55,7 +60,7 @@ class AuthService {
       )
     }
 
-    const pwMatches = await argon.verify(user.password, userDto.password)
+    const pwMatches = await compare(userDto.password, user.password)
     if (!pwMatches) {
       throw createHttpError(
         StatusCode.ClientErrorForbidden,
@@ -173,7 +178,7 @@ class AuthService {
 
   async checkCode(authcodes: AuthcodeEntity[], code: string) {
     for (let i = 0; i < authcodes.length; i++) {
-      if (await argon.verify(authcodes[i].code, code)) {
+      if (await compare(code, authcodes[i].code)) {
         return true
       }
     }
