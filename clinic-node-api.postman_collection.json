@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "0f6e0987-ecd2-40e7-9650-80129c41bebb",
 		"name": "clinic-node-api",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
 		"_exporter_id": "30044153"
 	},
 	"item": [
@@ -21,6 +21,18 @@
 							],
 							"path": [
 								"patients"
+							],
+							"query": [
+								{
+									"key": "phoneNumber",
+									"value": "380975555856",
+									"disabled": true
+								},
+								{
+									"key": "firstName",
+									"value": "Tim",
+									"disabled": true
+								}
 							]
 						}
 					},
@@ -31,16 +43,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": {
-							"raw": "{{url}}/patients/id",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"patients",
-								"id"
-							]
-						}
+						"url": "{{url}}/patients/4"
 					},
 					"response": []
 				},
@@ -51,67 +54,398 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"firstName\": \"Jon\",\r\n    \"lastName\": \"Down\"\r\n}",
+							"raw": "{\r\n    \"firstName\": \"Tim\",\r\n    \"lastName\": \"Kuk\",\r\n    \"phoneNumber\": \"+380978055555\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": {
-							"raw": "{{url}}/patients",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"patients"
-							]
-						}
+						"url": "{{url}}/patients"
 					},
 					"response": []
 				},
 				{
-					"name": "Update patient by id",
+					"name": "Update patient",
 					"request": {
 						"method": "PATCH",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"firstName\": \"John\",\r\n    \"lastName\": \"Don\"\r\n}",
+							"raw": "{\r\n    \"firstName\": \"Slava\",\r\n    \"lastName\": \"Kozodoy\",\r\n    \"phoneNumber\": \"+380975555856\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
+						"url": "{{url}}/patients/16"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete patient",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{url}}/patients/1"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Doctors",
+			"item": [
+				{
+					"name": "Get all doctors",
+					"request": {
+						"method": "GET",
+						"header": [],
 						"url": {
-							"raw": "{{url}}/patients/id",
+							"raw": "{{url}}/doctors",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
-								"patients",
-								"id"
+								"doctors"
+							],
+							"query": [
+								{
+									"key": "firstName",
+									"value": "Taras",
+									"disabled": true
+								},
+								{
+									"key": "specialty",
+									"value": "general",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "2",
+									"disabled": true
+								},
+								{
+									"key": "pageSize",
+									"value": "2",
+									"disabled": true
+								},
+								{
+									"key": "ids",
+									"value": "[3, 4, 5]",
+									"disabled": true
+								}
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Delete patient by id",
+					"name": "Get doctor by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{url}}/doctors/1"
+					},
+					"response": []
+				},
+				{
+					"name": "Create doctor",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Alina\",\r\n    \"lastName\": \"Dereyak\",\r\n    \"specialty\": \"sergin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{url}}/doctors"
+					},
+					"response": []
+				},
+				{
+					"name": "Update doctor",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Denis\",\r\n    \"lastName\": \"Deriroll\",\r\n    \"specialty\": \"surgeon\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{url}}/doctors/5"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete doctor",
 					"request": {
 						"method": "DELETE",
 						"header": [],
+						"url": "{{url}}/doctors/1"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Doctors Schedules",
+			"item": [
+				{
+					"name": "Get doctor schedules",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{url}}/doctors/3/schedules"
+					},
+					"response": []
+				},
+				{
+					"name": "Get schedule by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{url}}/doctors/3/schedules/6"
+					},
+					"response": []
+				},
+				{
+					"name": "Create schedule",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"startTime\": \"2024-02-02T08:00:00.000Z\",\r\n    \"endTime\": \"2024-02-02T20:00:00.000Z\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{url}}/doctors/2/schedules"
+					},
+					"response": []
+				},
+				{
+					"name": "Update schedule",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"startTime\": \"2024-02-02T08:00:00.000Z\",\r\n    \"endTime\": \"2024-02-02T21:00:00.000Z\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{url}}/doctors/2/schedules/5"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete schedule",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{url}}/doctors/3/schedules/6"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Appointment",
+			"item": [
+				{
+					"name": "Get all appointments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{url}}/appointments"
+					},
+					"response": []
+				},
+				{
+					"name": "Get appointments by doctorId and Day",
+					"request": {
+						"method": "GET",
+						"header": [],
 						"url": {
-							"raw": "{{url}}/patients/id",
+							"raw": "{{url}}/appointments?doctorId=2&day=2023-10-18",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
-								"patients",
-								"id"
+								"appointments"
+							],
+							"query": [
+								{
+									"key": "doctorId",
+									"value": "2"
+								},
+								{
+									"key": "day",
+									"value": "2023-10-18"
+								}
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get appointment by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{url}}/appointments/25"
+					},
+					"response": []
+				},
+				{
+					"name": "Create appointment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"patientId\": 2,\r\n    \"doctorId\": 4,\r\n    \"startTime\": \"2024-02-01T11:00:00.000Z\",\r\n    \"endTime\": \"2024-02-01T12:00:00.000Z\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{url}}/appointments"
+					},
+					"response": []
+				},
+				{
+					"name": "Update appointment",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"doctorId\": 4,\r\n    \"startTime\": \"2024-02-01T10:00:00.000Z\",\r\n    \"endTime\": \"2024-02-01T11:00:00.000Z\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{url}}/appointments/7"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete appointment",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{url}}/appointments/19"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Registration",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"phoneNumber\": \"+380978055555\",\r\n    \"password\": \"qwerty\",\r\n    \"role\": \"patient\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{url}}/auth/signup"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"login\": \"+380978055555\",\r\n    \"password\": \"qwerty\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{url}}/auth/signin"
+					},
+					"response": []
+				},
+				{
+					"name": "Sign without password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"acateely@gmail.com\",\r\n    // \"phoneNumber\": \"380978055555\",\r\n    \"code\": \"25014\"\r\n    // \"role\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{url}}/auth/login"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{url}}/users"
+					},
+					"response": []
+				},
+				{
+					"name": "Get user by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{url}}/users/id"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete user",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{url}}/users/7"
 					},
 					"response": []
 				}

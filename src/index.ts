@@ -7,6 +7,8 @@ import { appointmentRouter } from './routers/appointment-router'
 import { dataSourse } from './database/data-sourse'
 import { errorHandler } from './middlewares/error-handler-middleware'
 import { doctorScheduleRouter } from './routers/doctor-schedule-router'
+import { authRouter } from './routers/auth-router'
+import { userRouter } from './routers/user-router'
 
 dotenv.config()
 
@@ -18,6 +20,8 @@ app.use('/doctors', doctorRouter)
 app.use('/doctors/:doctorId/schedules', doctorScheduleRouter)
 app.use('/patients', patientRouter)
 app.use('/appointments', appointmentRouter)
+app.use('/auth', authRouter)
+app.use('/users', userRouter)
 
 app.use(errorHandler)
 

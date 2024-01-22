@@ -1,7 +1,8 @@
 import express from 'express'
 import { patientService } from '../services/patient-service'
-import { FormatPhoneNumberMiddleware } from '../middlewares/phone-number-format-middleware'
 import StatusCode from 'status-code-enum'
+import { CreatePatientDto } from '../dto/patient/create-patient-dto'
+import { UpdatePatientDto } from '../dto/patient/update-patient-dto'
 
 export const patientRouter = express.Router()
 
@@ -26,13 +27,14 @@ patientRouter.get('/:id', async (req, res, next) => {
 })
 
 // Create
-patientRouter.post('/', FormatPhoneNumberMiddleware, async (req, res, next) => {
+patientRouter.post('/', async (req, res, next) => {
   try {
-    const { firstName, lastName, phoneNumber } = req.body
     const patient = await patientService.create(
-      firstName,
-      lastName,
-      phoneNumber
+      new CreatePatientDto(
+        req.body.firstName,
+        req.body.lastName,
+        req.body.phoneNumber
+      )
     )
     res.status(StatusCode.SuccessCreated).json(patient)
   } catch (error) {
@@ -41,24 +43,21 @@ patientRouter.post('/', FormatPhoneNumberMiddleware, async (req, res, next) => {
 })
 
 // Update
-patientRouter.patch(
-  '/:id',
-  FormatPhoneNumberMiddleware,
-  async (req, res, next) => {
-    try {
-      const { firstName, lastName, phoneNumber } = req.body
-      const patient = await patientService.update(
+patientRouter.patch('/:id', async (req, res, next) => {
+  try {
+    const patient = await patientService.update(
+      new UpdatePatientDto(
         +req.params.id,
-        firstName,
-        lastName,
-        phoneNumber
+        req.body.firstName,
+        req.body.lastName,
+        req.body.phoneNumber
       )
-      res.status(StatusCode.SuccessOK).json(patient)
-    } catch (error) {
-      next(error)
-    }
+    )
+    res.status(StatusCode.SuccessOK).json(patient)
+  } catch (error) {
+    next(error)
   }
-)
+})
 
 // Delete
 patientRouter.delete('/:id', async (req, res, next) => {

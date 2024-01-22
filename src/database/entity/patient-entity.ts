@@ -27,13 +27,13 @@ export class PatientEntity {
   phoneNumber: string
 
   @OneToMany(() => AppointmentEntity, (appointment) => appointment.patient, {
-    cascade: ['remove'],
+    onDelete: 'CASCADE',
   })
   appointments: AppointmentEntity[]
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date
 }

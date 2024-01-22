@@ -1,7 +1,8 @@
 import express from 'express'
 import { appointmentService } from '../services/appointment-service'
-import { AppointmentTimesParsingMiddleware } from '../middlewares/appointment-times-parsing-middleware'
 import StatusCode from 'status-code-enum'
+import { CreateAppointmentDto } from '../dto/appointment/create-appointment-dto'
+import { UpdateAppointmentDto } from '../dto/appointment/update-appointment-dto'
 
 export const appointmentRouter = express.Router()
 
@@ -35,44 +36,38 @@ appointmentRouter.get('/:id', async (req, res, next) => {
 })
 
 // Create
-appointmentRouter.post(
-  '/',
-  AppointmentTimesParsingMiddleware,
-  async (req, res, next) => {
-    try {
-      const { patientId, doctorId, startTime, endTime } = req.body
-      const appointment = await appointmentService.create(
-        patientId,
-        doctorId,
-        startTime,
-        endTime
+appointmentRouter.post('/', async (req, res, next) => {
+  try {
+    const appointment = await appointmentService.create(
+      new CreateAppointmentDto(
+        req.body.patientId,
+        req.body.doctorId,
+        new Date(req.body.startTime),
+        new Date(req.body.endTime)
       )
-      res.status(StatusCode.SuccessCreated).json(appointment)
-    } catch (error) {
-      next(error)
-    }
+    )
+    res.status(StatusCode.SuccessCreated).json(appointment)
+  } catch (error) {
+    next(error)
   }
-)
+})
 
 // Update
-appointmentRouter.patch(
-  '/:id',
-  AppointmentTimesParsingMiddleware,
-  async (req, res, next) => {
-    try {
-      const { doctorId, startTime, endTime } = req.body
-      const appointment = await appointmentService.update(
+appointmentRouter.patch('/:id', async (req, res, next) => {
+  try {
+    const appointment = await appointmentService.update(
+      new UpdateAppointmentDto(
         +req.params.id,
-        doctorId,
-        startTime,
-        endTime
+        req.body.doctorId,
+        new Date(req.body.startTime),
+        new Date(req.body.endTime)
       )
-      res.status(StatusCode.SuccessOK).json(appointment)
-    } catch (error) {
-      next(error)
-    }
+    )
+    res.status(StatusCode.SuccessOK).json(appointment)
+  } catch (error) {
+    next(error)
   }
-)
+})
 
 // Delete
 appointmentRouter.delete('/:id', async (req, res, next) => {

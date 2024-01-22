@@ -26,7 +26,7 @@ export class DoctorEntity {
   specialty: string
 
   @OneToMany(() => AppointmentEntity, (appointment) => appointment.doctor, {
-    cascade: ['remove'],
+    onDelete: 'CASCADE',
   })
   appointments: AppointmentEntity[]
 
@@ -34,14 +34,14 @@ export class DoctorEntity {
     () => DoctorScheduleEntity,
     (doctorSchedule) => doctorSchedule.doctor,
     {
-      cascade: ['remove'],
+      onDelete: 'CASCADE',
     }
   )
   schedule: DoctorScheduleEntity[]
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date
 }
