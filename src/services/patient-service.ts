@@ -8,7 +8,18 @@ import { validDto, validateDto } from '../util/validate-decorators'
 class PatientService {
   async get(filter: any) {
     const patientRepo = dataSourse.getRepository(PatientEntity)
-    const patients = await patientRepo.findBy(this.convertFilter(filter))
+
+    const where: any = {}
+
+    if (filter.firstName) {
+      where.firstName = filter.firstName
+    }
+
+    if (filter.phoneNumber && formatPhoneNumber(filter.phoneNumber)) {
+      where.phoneNumber = formatPhoneNumber(filter.phoneNumber)
+    }
+
+    const patients = await patientRepo.findBy(where)
 
     return patients
   }
@@ -55,20 +66,6 @@ class PatientService {
     const result = await patientRepo.delete(id)
 
     return result
-  }
-
-  convertFilter(filter: any) {
-    const where: any = {}
-
-    if (filter.firstName) {
-      where.firstName = filter.firstName
-    }
-
-    if (filter.phoneNumber && formatPhoneNumber(filter.phoneNumber)) {
-      where.phoneNumber = formatPhoneNumber(filter.phoneNumber)
-    }
-
-    return where
   }
 }
 

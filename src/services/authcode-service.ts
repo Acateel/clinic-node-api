@@ -1,8 +1,13 @@
 import { MoreThanOrEqual } from 'typeorm'
-import * as argon from 'argon2'
+import { hash } from 'bcrypt'
+import dotenv from 'dotenv'
+
 import { dataSourse } from '../database/data-sourse'
 import { AuthcodeEntity } from '../database/entity/authcode-entity'
 import { UserEntity } from '../database/entity/user-entity'
+
+dotenv.config()
+const bcryptSalt: string = process.env.BCRYPT_SALT
 
 class AuthcodeService {
   async getByUser(user: UserEntity) {
@@ -32,7 +37,7 @@ class AuthcodeService {
 
     const authcode = new AuthcodeEntity()
     authcode.user = user
-    authcode.code = await argon.hash(code)
+    authcode.code = await hash(code, bcryptSalt)
 
     const result = await authcodeRepo.save(authcode)
 

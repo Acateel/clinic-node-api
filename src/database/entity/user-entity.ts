@@ -43,7 +43,7 @@ export class UserEntity {
   role: UserRole
 
   @OneToMany(() => AuthcodeEntity, (authcode) => authcode.user, {
-    cascade: ['remove'],
+    onDelete: 'CASCADE',
   })
   Authcodes: AuthcodeEntity[]
 

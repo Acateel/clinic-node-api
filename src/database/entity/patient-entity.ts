@@ -27,7 +27,7 @@ export class PatientEntity {
   phoneNumber: string
 
   @OneToMany(() => AppointmentEntity, (appointment) => appointment.patient, {
-    cascade: ['remove'],
+    onDelete: 'CASCADE',
   })
   appointments: AppointmentEntity[]
 

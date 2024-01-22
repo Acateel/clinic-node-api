@@ -30,7 +30,7 @@
 								},
 								{
 									"key": "firstName",
-									"value": "Taras",
+									"value": "Tim",
 									"disabled": true
 								}
 							]
@@ -54,7 +54,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"firstName\": \"Svyatoslav\",\r\n    \"lastName\": \"Kozodoi\",\r\n    \"phoneNumber\": \"(097) 555-5856\"\r\n}",
+							"raw": "{\r\n    \"firstName\": \"Tim\",\r\n    \"lastName\": \"Kuk\",\r\n    \"phoneNumber\": \"+380978055555\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -72,14 +72,14 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"firstName\": \"Slava\",\r\n    \"lastName\": \"Kozodoy\",\r\n    \"phoneNumber\": \"+0975555856\"\r\n}",
+							"raw": "{\r\n    \"firstName\": \"Slava\",\r\n    \"lastName\": \"Kozodoy\",\r\n    \"phoneNumber\": \"+380975555856\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "{{url}}/patients/4"
+						"url": "{{url}}/patients/16"
 					},
 					"response": []
 				},
@@ -113,22 +113,22 @@
 							"query": [
 								{
 									"key": "firstName",
-									"value": "Den",
+									"value": "Taras",
 									"disabled": true
 								},
 								{
 									"key": "specialty",
-									"value": "surgeon",
+									"value": "general",
 									"disabled": true
 								},
 								{
 									"key": "page",
-									"value": "1",
+									"value": "2",
 									"disabled": true
 								},
 								{
 									"key": "pageSize",
-									"value": "10",
+									"value": "2",
 									"disabled": true
 								},
 								{
@@ -157,7 +157,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"firstName\": \"Richard\",\r\n    \"lastName\": \"Shevchuk\",\r\n    \"specialty\": \"general\"\r\n}",
+							"raw": "{\r\n    \"firstName\": \"Alina\",\r\n    \"lastName\": \"Dereyak\",\r\n    \"specialty\": \"sergin\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -182,7 +182,7 @@
 								}
 							}
 						},
-						"url": "{{url}}/doctors/1"
+						"url": "{{url}}/doctors/5"
 					},
 					"response": []
 				},
@@ -225,14 +225,14 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"startTime\": \"2024-01-01T08:00:00.000Z\",\r\n    \"endTime\": \"2024-01-01T20:00:00.000Z\"\r\n}",
+							"raw": "{\r\n    \"startTime\": \"2024-02-02T08:00:00.000Z\",\r\n    \"endTime\": \"2024-02-02T20:00:00.000Z\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "{{url}}/doctors/1/schedules"
+						"url": "{{url}}/doctors/2/schedules"
 					},
 					"response": []
 				},
@@ -243,14 +243,14 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"startTime\": \"2023-11-21T09:00:00.000Z\",\r\n    \"endTime\": \"2023-11-21T20:00:00.000Z\"\r\n}",
+							"raw": "{\r\n    \"startTime\": \"2024-02-02T08:00:00.000Z\",\r\n    \"endTime\": \"2024-02-02T21:00:00.000Z\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "{{url}}/doctors/3/schedules/7"
+						"url": "{{url}}/doctors/2/schedules/5"
 					},
 					"response": []
 				},
@@ -320,7 +320,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"patientId\": 1,\r\n    \"doctorId\": 1,\r\n    \"startTime\": \"2024-01-01T08:00:00.000Z\",\r\n    \"endTime\": \"2024-01-01T09:00:00.000Z\"\r\n}",
+							"raw": "{\r\n    \"patientId\": 2,\r\n    \"doctorId\": 4,\r\n    \"startTime\": \"2024-02-01T11:00:00.000Z\",\r\n    \"endTime\": \"2024-02-01T12:00:00.000Z\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -338,14 +338,14 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"doctorId\": 2,\r\n    \"startTime\": \"2023-10-18T10:20:00.000Z\",\r\n    \"endTime\": \"2023-10-18T10:40:00.000Z\"\r\n}",
+							"raw": "{\r\n    \"doctorId\": 4,\r\n    \"startTime\": \"2024-02-01T10:00:00.000Z\",\r\n    \"endTime\": \"2024-02-01T11:00:00.000Z\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "{{url}}/appointments/22"
+						"url": "{{url}}/appointments/7"
 					},
 					"response": []
 				},
@@ -377,7 +377,7 @@
 								}
 							}
 						},
-						"url": "{{url}}/signup"
+						"url": "{{url}}/auth/signup"
 					},
 					"response": []
 				},
@@ -395,7 +395,7 @@
 								}
 							}
 						},
-						"url": "{{url}}/signin"
+						"url": "{{url}}/auth/signin"
 					},
 					"response": []
 				},
@@ -406,14 +406,14 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    // \"email\": \"acateely@gmail.com\",\r\n    // \"phoneNumber\": \"380978055555\"\r\n    // \"code\": \"74435\"\r\n    // \"role\": \"admin\"\r\n}",
+							"raw": "{\r\n    \"email\": \"acateely@gmail.com\",\r\n    // \"phoneNumber\": \"380978055555\",\r\n    \"code\": \"25014\"\r\n    // \"role\": \"admin\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "{{url}}/sign"
+						"url": "{{url}}/auth/login"
 					},
 					"response": []
 				}
@@ -445,7 +445,7 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"url": "{{url}}/users/5"
+						"url": "{{url}}/users/7"
 					},
 					"response": []
 				}
